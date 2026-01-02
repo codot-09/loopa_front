@@ -3,199 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Loopa</title>
-    <link rel="preload" href="logo.png" as="image">
+    <title>Loopa - Xush kelibsiz</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --primary: #011627;
             --accent: #3a86ff;
             --bg: #f8f9fa;
-            --white: #ffffff;
-            --text-muted: #64748b;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+        body { 
+            background: #fff; 
+            color: var(--primary); 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: space-between;
+            padding: 60px 25px 40px;
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); min-height: 100vh; padding-bottom: 90px; overflow-x: hidden; }
-
-        header {
-            background: var(--white);
-            padding: 12px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
-        }
-
-        .brand { display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .logo { width: 26px; height: 26px; object-fit: contain; }
-        .brand-name { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
-
-        .search-container {
-            background: #f1f5f9;
-            border-radius: 12px;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .search-container input { border: none; background: transparent; width: 100%; font-size: 0.9rem; outline: none; color: var(--primary); }
-
-        .container { padding: 12px; }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-        .card:active { transform: scale(0.98); }
-
-        .card-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #f8fafc; }
-        .card-body { padding: 12px; flex: 1; display: flex; flex-direction: column; }
-        .card-meta { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
-        .card-title { font-size: 0.85rem; font-weight: 600; line-height: 1.4; color: var(--primary); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.8em; }
-        .card-price { font-size: 1rem; font-weight: 800; color: var(--accent); margin-top: auto; }
-
-        .nav {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            height: 64px;
-            background: rgba(1, 22, 39, 0.98);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            z-index: 1000;
-        }
-
-        .nav-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: rgba(255,255,255,0.5);
-            text-decoration: none;
+        .content {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
-        .nav-link.active { color: var(--white); }
-        .nav-link svg { width: 20px; height: 20px; }
-        .nav-label { font-size: 0.65rem; font-weight: 600; }
 
-        .shimmer-box { background: #e2e8f0; border-radius: 16px; height: 220px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+        .illustration {
+            width: 240px;
+            height: 240px;
+            border-radius: 40px;
+            object-fit: cover;
+            box-shadow: 0 20px 40px rgba(1, 22, 39, 0.1);
+            margin-bottom: 40px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
 
-        .empty { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 100px 40px; text-align: center; }
-        .empty img { width: 140px; margin-bottom: 20px; }
-        .empty h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
-        .empty p { font-size: 0.85rem; color: var(--text-muted); }
+        .title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            font-size: 1.05rem;
+            color: #6c757d;
+            line-height: 1.6;
+            max-width: 280px;
+        }
+
+        .footer {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 18px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: 18px;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(1, 22, 39, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .loader {
+            width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff; border-radius: 50%;
+            display: none; animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="brand">
-            <img src="/assets/logo.png" alt="L" class="logo" fetchpriority="high">
-            <span class="brand-name">Loopa</span>
-        </div>
-        <div class="search-container">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #94a3b8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" placeholder="Mahsulot qidirish..." disabled>
-        </div>
-    </header>
-
-    <div class="container">
-        <div id="loader" class="grid">
-            <div class="shimmer-box"></div><div class="shimmer-box"></div>
-            <div class="shimmer-box"></div><div class="shimmer-box"></div>
-        </div>
-
-        <div id="products" class="grid"></div>
-
-        <div id="empty" class="empty">
-            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png">
-            <h3>Hech narsa topilmadi</h3>
-            <p>Siz qidirgan mahsulotlar hozircha mavjud emas.</p>
-        </div>
+    <div class="content">
+        <img class="illustration" src="https://cdn.dribbble.com/userupload/41559485/file/original-f91258332b25058c27cfad3c2901abcf.png?resize=800x600" alt="Loopa">
+        <h1 class="title">Loopa'ga<br>Xush kelibsiz</h1>
+        <p class="subtitle">Zamonaviy xaridlar va qulay interfeys bir joyda jamlangan.</p>
     </div>
 
-    <nav class="nav">
-        <a href="#" class="nav-link active" onclick="tab(this)">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span class="nav-label">Asosiy</span>
-        </a>
-        <a href="#" class="nav-link" onclick="tab(this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            <span class="nav-label">Sevimlilar</span>
-        </a>
-        <a href="#" class="nav-link" onclick="tab(this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span class="nav-label">Profil</span>
-        </a>
-    </nav>
+    <div class="footer">
+        <button class="btn" id="startBtn">
+            <span>Boshlash</span>
+            <div class="loader" id="loader"></div>
+        </button>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        
-        async function init() {
-            tg.ready();
-            tg.expand();
-            
-            const token = localStorage.getItem('token');
-            const list = document.getElementById('products');
-            const loader = document.getElementById('loader');
-            const empty = document.getElementById('empty');
+        if(tg) { tg.ready(); tg.expand(); }
+
+        const startBtn = document.getElementById('startBtn');
+        const loader = document.getElementById('loader');
+
+        startBtn.addEventListener('click', async () => {
+            const user = tg.initDataUnsafe?.user;
+            const chatId = user?.id?.toString() || "";
+            const username = user?.username || user?.first_name || "user";
+
+            if(!chatId) {
+                tg.showAlert("Telegram ma'lumotlari topilmadi.");
+                return;
+            }
+
+            startBtn.disabled = true;
+            loader.style.display = 'block';
+            tg.HapticFeedback.impactOccurred('medium');
 
             try {
-                const res = await fetch('https://api.loopa.buzz/api/products/for-user?page=0&size=20', {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                const response = await fetch('https://api.loopa.buzz/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chatId, username })
                 });
-                const data = await res.json();
-                
-                loader.style.display = 'none';
 
-                if(data.success && data.data?.content?.length > 0) {
-                    list.innerHTML = data.data.content.map(p => `
-                        <div class="card" onclick="tg.HapticFeedback.impactOccurred('light')">
-                            <img src="${p.cover}" class="card-img" loading="lazy">
-                            <div class="card-body">
-                                <div class="card-meta">⭐ ${p.recommendedCount || 0} tavsiya</div>
-                                <h2 class="card-title">${p.name}</h2>
-                                <div class="card-price">${Number(p.price).toLocaleString()} so'm</div>
-                            </div>
-                        </div>
-                    `).join('');
+                const result = await response.json();
+
+                if(result.success && result.data?.token) {
+                    localStorage.setItem('token', result.data.token);
+                    tg.HapticFeedback.notificationOccurred('success');
+                    
+                    if(result.data.newUser) {
+                        window.location.href = 'interests.html';
+                    } else {
+                        window.location.href = (result.data.role === 'ADMIN') ? 'admin.html' : 'dashboard.html';
+                    }
                 } else {
-                    empty.style.display = 'flex';
+                    tg.showAlert(result.message || "Kirishda xatolik yuz berdi.");
                 }
-            } catch (e) {
+            } catch (error) {
+                tg.showAlert("Internet aloqasini tekshiring.");
+            } finally {
+                startBtn.disabled = false;
                 loader.style.display = 'none';
-                empty.style.display = 'flex';
             }
-        }
-
-        function tab(el) {
-            tg.HapticFeedback.impactOccurred('medium');
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        init();
+        });
     </script>
 </body>
 </html>
