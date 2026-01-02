@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Loopa - Profil</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --text-muted: #64748b;
+            --border: rgba(0,0,0,0.05);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); min-height: 100vh; padding-bottom: 100px; }
+
+        header {
+            background: var(--white);
+            padding: 40px 20px 30px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .profile-card { display: flex; flex-direction: column; align-items: center; }
+        .avatar {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--white);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+        .name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+        .id-badge {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .menu-container { padding: 25px 20px; }
+        .menu-list { background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            text-decoration: none;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:active { background: #f8fafc; }
+
+        .menu-info { display: flex; align-items: center; gap: 14px; }
+        .menu-icon { font-size: 1.2rem; display: flex; align-items: center; justify-content: center; width: 24px; }
+        .menu-label { font-size: 1rem; font-weight: 600; }
+        
+        .arrow-icon { color: #cbd5e1; font-size: 1.2rem; font-weight: 300; }
+
+        .nav {
+            position: fixed;
+            bottom: 20px; left: 20px; right: 20px;
+            height: 64px;
+            background: rgba(1, 22, 39, 0.98);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; }
+        .nav-link.active { color: var(--white); }
+        .nav-link svg { width: 20px; height: 20px; }
+        .nav-label { font-size: 0.65rem; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="profile-card">
+            <img id="u-img" class="avatar" src="">
+            <h2 id="u-name" class="name">Foydalanuvchi</h2>
+            <span id="u-id" class="id-badge">ID: ---</span>
+        </div>
+    </header>
+
+    <div class="menu-container">
+        <div class="menu-list">
+            <a href="register-seller.html" class="menu-item" onclick="tg.HapticFeedback.impactOccurred('light')">
+                <div class="menu-info">
+                    <span class="menu-icon">🏪</span>
+                    <span class="menu-label">Sotuvchi bo'lish</span>
+                </div>
+                <span class="arrow-icon">›</span>
+            </a>
+            <a href="support.html" class="menu-item" onclick="tg.HapticFeedback.impactOccurred('light')">
+                <div class="menu-info">
+                    <span class="menu-icon">🎧</span>
+                    <span class="menu-label">Qo'llab-quvvatlash</span>
+                </div>
+                <span class="arrow-icon">›</span>
+            </a>
+            <a href="terms.html" class="menu-item" onclick="tg.HapticFeedback.impactOccurred('light')">
+                <div class="menu-info">
+                    <span class="menu-icon">📄</span>
+                    <span class="menu-label">Tizim shartlari</span>
+                </div>
+                <span class="arrow-icon">›</span>
+            </a>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <a href="dashboard.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span class="nav-label">Asosiy</span>
+        </a>
+        <a href="favorites.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span class="nav-label">Sevimlilar</span>
+        </a>
+        <a href="#" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span class="nav-label">Profil</span>
+        </a>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        const user = tg.initDataUnsafe?.user;
+        if(user) {
+            document.getElementById('u-name').textContent = `${user.first_name}${user.last_name ? ' ' + user.last_name : ''}`;
+            document.getElementById('u-id').textContent = `ID: ${user.id}`;
+            document.getElementById('u-img').src = user.photo_url || `https://ui-avatars.com/api/?name=${user.first_name}&background=011627&color=fff`;
+        }
+    </script>
+</body>
+</html>
