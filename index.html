@@ -19,98 +19,52 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             height: 100vh;
-        }
-        .container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-        }
-        .slides-wrapper {
-            display: flex;
-            width: 300%;
-            height: 100%;
-            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .slide {
-            width: 100vw;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 60px 24px 100px;
+            padding: 60px 32px 100px;
             text-align: center;
         }
-        .content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .illustration {
-            width: 240px;
-            height: 240px;
-            margin-bottom: 48px;
-            border-radius: 20px;
+        .logo {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 50px;
+            border-radius: 28px;
             object-fit: cover;
-            box-shadow: 0 12px 28px rgba(1,22,39,0.1);
+            box-shadow: 0 15px 35px rgba(1,22,39,0.12);
         }
         h1 {
-            font-size: 2.2em;
+            font-size: 2.4em;
             color: #011627;
-            margin-bottom: 14px;
+            margin-bottom: 20px;
             font-weight: 700;
             line-height: 1.2;
         }
         p {
-            font-size: 1.1em;
+            font-size: 1.15em;
             color: #555555;
             max-width: 80%;
+            margin: 0 auto 40px;
             line-height: 1.6;
-        }
-        .features {
-            margin: 30px 0;
-            width: 100%;
-        }
-        .feature {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 32px 0;
-        }
-        .feature img {
-            width: 68px;
-            height: 68px;
-            margin-bottom: 18px;
-        }
-        .feature h3 {
-            font-size: 1.3em;
-            color: #011627;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .feature p {
-            font-size: 1em;
-            color: #666666;
         }
         .btn-container {
             position: fixed;
             bottom: 32px;
             left: 50%;
             transform: translateX(-50%);
-            width: calc(100% - 48px);
+            width: calc(100% - 64px);
             max-width: 400px;
         }
         .btn {
             background-color: #011627;
             color: #FFFFFF;
             border: none;
-            padding: 18px 32px;
-            font-size: 1.25em;
+            padding: 20px 40px;
+            font-size: 1.3em;
             border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 8px 22px rgba(1,22,39,0.22);
-            transition: all 0.25s ease;
+            box-shadow: 0 10px 25px rgba(1,22,39,0.22);
+            transition: transform 0.25s ease;
             width: 100%;
             font-weight: 600;
             outline: none;
@@ -118,79 +72,18 @@
         .btn:active {
             transform: scale(0.96);
         }
-        .dots {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-        }
-        .dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background-color: #CCCCCC;
-            transition: all 0.4s ease;
-        }
-        .dot.active {
-            background-color: #011627;
-            width: 28px;
-            border-radius: 20px;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="slides-wrapper" id="slidesWrapper">
-            <div class="slide">
-                <div class="content">
-                    <img class="illustration" src="https://cdn.dribbble.com/userupload/16118312/file/original-6c2a5118ea1abaa06164d71b337148ee.jpg" alt="Xush kelibsiz">
-                    <h1>Salom Loopga Xush Kelibsiz</h1>
-                    <p>Qulay va zamonaviy onlayn xarid tajribasi. Minglab mahsulotlar bir joyda.</p>
-                </div>
-            </div>
+    <img class="logo" src="https://cdn.dribbble.com/userupload/16118312/file/original-6c2a5118ea1abaa06164d71b337148ee.jpg" alt="Salom Loop">
+    
+    <div>
+        <h1>Salom Loopga Xush Kelibsiz</h1>
+        <p>Qulay va zamonaviy onlayn xarid tajribasi. Minglab mahsulotlar bir joyda.</p>
+    </div>
 
-            <div class="slide">
-                <div class="content">
-                    <div class="features">
-                        <div class="feature">
-                            <img src="https://static.vecteezy.com/system/resources/thumbnails/071/967/212/small/collection-of-online-shopping-and-electronic-commerce-icon-for-website-and-application-design-vector.jpg" alt="Katta tanlov">
-                            <h3>Katta Tanlov</h3>
-                            <p>Turli kategoriyalarda minglab mahsulotlar</p>
-                        </div>
-                        <div class="feature">
-                            <img src="https://img.freepik.com/premium-vector/vector-fast-delivery-icon-illustration_723554-1032.jpg" alt="Qulay interfeys">
-                            <h3>Qulay Interfeys</h3>
-                            <p>Oson qidiruv va tez navigatsiya</p>
-                        </div>
-                        <div class="feature">
-                            <img src="https://as2.ftcdn.net/jpg/06/17/54/93/1000_F_617549379_5dlHTHnOgN1l4Pff9kJXkEXw0o5ugF4F.jpg" alt="Chegirmalar">
-                            <h3>Doimiy Chegirmalar</h3>
-                            <p>Aksiyalar va maxsus takliflar</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="slide">
-                <div class="content">
-                    <img class="illustration" src="https://framerusercontent.com/images/170uhVLUqcBJUZuJfN3BpcMsY.jpg?width=1536&height=1024" alt="Boshlash">
-                    <h1>Boshlashga Tayyormisiz?</h1>
-                    <p>Yangi xarid tajribangizni hozir boshlang!</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="dots" id="dots">
-            <span class="dot active"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
-
-        <div class="btn-container">
-            <button class="btn" id="nextBtn">Keyingisi</button>
-        </div>
+    <div class="btn-container">
+        <button class="btn" id="startBtn">Boshlash</button>
     </div>
 
     <script>
@@ -199,46 +92,9 @@
             Telegram.WebApp.expand();
         }
 
-        const wrapper = document.getElementById('slidesWrapper');
-        const nextBtn = document.getElementById('nextBtn');
-        const dots = document.querySelectorAll('.dot');
-        let current = 0;
-        const total = 3;
-
-        function updateDots() {
-            dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === current);
-            });
-        }
-
-        function goToSlide(index) {
-            wrapper.style.transform = `translateX(-${index * 100}vw)`;
-            current = index;
-            updateDots();
-            nextBtn.textContent = current === total - 1 ? 'Boshlash' : 'Keyingisi';
-        }
-
-        nextBtn.addEventListener('click', () => {
-            if (current < total - 1) {
-                goToSlide(current + 1);
-            } else {
-                alert('Asosiy sahifaga xush kelibsiz! (Demo)');
-            }
+        document.getElementById('startBtn').addEventListener('click', () => {
+            alert('Asosiy sahifaga xush kelibsiz! (Demo)');
         });
-
-        let touchStartX = 0;
-        document.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        document.addEventListener('touchend', e => {
-            const touchEndX = e.changedTouches[0].screenX;
-            const diff = touchStartX - touchEndX;
-            if (Math.abs(diff) > 50) {
-                if (diff > 0 && current < total - 1) goToSlide(current + 1);
-                else if (diff < 0 && current > 0) goToSlide(current - 1);
-            }
-        }, { passive: true });
     </script>
 </body>
 </html>
