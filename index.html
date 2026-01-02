@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Salom Loop</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Mobil bosilganda ko'k belgi chiqmasin */
-            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
         body {
-            background-color: #FFFFFF;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             height: 100vh;
@@ -28,7 +29,7 @@
             display: flex;
             width: 300%;
             height: 100%;
-            transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .slide {
             width: 100vw;
@@ -36,7 +37,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 70px 30px 50px;
+            padding: 80px 30px 60px;
             text-align: center;
         }
         .content {
@@ -47,82 +48,78 @@
             align-items: center;
         }
         .illustration {
-            width: 300px;
-            height: 300px;
+            width: 260px;
+            height: 260px;
             margin-bottom: 60px;
             border-radius: 20px;
             object-fit: cover;
-            box-shadow: 0 15px 35px rgba(1,22,39,0.1);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
         }
         h1 {
-            font-size: 2.6em;
-            color: #011627;
+            font-size: 2.4em;
+            color: var(--tg-theme-text-color, #011627);
             margin-bottom: 16px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
         p {
-            font-size: 1.2em;
-            color: #444444;
+            font-size: 1.15em;
+            color: var(--tg-theme-hint-color, #666666);
             max-width: 85%;
             line-height: 1.7;
         }
         .features {
-            margin: 50px 0;
+            margin: 40px 0;
             width: 100%;
         }
         .feature {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 45px 0;
+            margin: 40px 0;
         }
         .feature img {
-            width: 85px;
-            height: 85px;
-            margin-bottom: 24px;
-            filter: brightness(0);
+            width: 76px;
+            height: 76px;
+            margin-bottom: 20px;
         }
         .feature h3 {
-            font-size: 1.45em;
-            color: #011627;
-            margin-bottom: 12px;
+            font-size: 1.35em;
+            color: var(--tg-theme-text-color, #011627);
+            margin-bottom: 10px;
             font-weight: 600;
         }
         .feature p {
             font-size: 1.05em;
-            color: #555555;
+            color: var(--tg-theme-hint-color, #777777);
         }
         .btn-container {
             position: fixed;
-            bottom: 40px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 60px);
             padding: 0 10px;
         }
         .btn {
-            background-color: #011627;
-            color: #FFFFFF;
+            background-color: var(--tg-theme-button-color, #011627);
+            color: var(--tg-theme-button-text-color, #ffffff);
             border: none;
-            padding: 20px 40px;
-            font-size: 1.3em;
+            padding: 18px 40px;
+            font-size: 1.25em;
             border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(1,22,39,0.25);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             transition: all 0.25s ease;
             width: 100%;
             font-weight: 600;
             outline: none;
-            -webkit-appearance: none;
         }
         .btn:active {
             transform: scale(0.96);
-            box-shadow: 0 6px 15px rgba(1,22,39,0.2);
         }
         .dots {
             position: fixed;
-            bottom: 120px;
+            bottom: 110px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -132,12 +129,12 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: #CCCCCC;
+            background-color: var(--tg-theme-hint-color, #cccccc);
             transition: all 0.4s ease;
         }
         .dot.active {
-            background-color: #011627;
-            width: 32px;
+            background-color: var(--tg-theme-button-color, #011627);
+            width: 30px;
             border-radius: 20px;
         }
     </style>
@@ -147,7 +144,7 @@
         <div class="slides-wrapper" id="slidesWrapper">
             <div class="slide">
                 <div class="content">
-                    <img class="illustration" src="https://st.depositphotos.com/2466369/53609/v/1600/depositphotos_536098224-stock-illustration-online-shopping-concept-onboarding-screens.jpg" alt="Xush kelibsiz">
+                    <img class="illustration" src="https://cdn.dribbble.com/userupload/16118312/file/original-6c2a5118ea1abaa06164d71b337148ee.jpg" alt="Xush kelibsiz">
                     <h1>Salom Loopga Xush Kelibsiz</h1>
                     <p>Eng zamonaviy va qulay onlayn xarid tajribasi sizni kutmoqda. Minglab mahsulotlar bir joyda.</p>
                 </div>
@@ -177,7 +174,7 @@
 
             <div class="slide">
                 <div class="content">
-                    <img class="illustration" src="https://st3.depositphotos.com/7723892/34888/v/1600/depositphotos_348883890-stock-illustration-online-shopping-mobile-app-onboarding.jpg" alt="Boshlash">
+                    <img class="illustration" src="https://framerusercontent.com/images/170uhVLUqcBJUZuJfN3BpcMsY.jpg?width=1536&height=1024" alt="Boshlash">
                     <h1>Boshlashga Tayyormisiz?</h1>
                     <p>Salom Loop bilan yangi xarid tajribasini boshlang!</p>
                 </div>
@@ -196,6 +193,12 @@
     </div>
 
     <script>
+        // Telegram WebApp integration
+        if (window.Telegram && Telegram.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }
+
         const wrapper = document.getElementById('slidesWrapper');
         const nextBtn = document.getElementById('nextBtn');
         const dots = document.querySelectorAll('.dot');
@@ -224,11 +227,12 @@
             if (current < total - 1) {
                 goToSlide(current + 1);
             } else {
-                alert('Asosiy sahifaga xush kelibsiz! (Demo)');
+                // Asosiy sahifaga o'tish (demo)
+                alert('Asosiy sahifaga xush kelibsiz!');
             }
         });
 
-        // Smooth swipe support
+        // Swipe support
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -239,7 +243,6 @@
         document.addEventListener('touchend', e => {
             touchEndX = e.changedTouches[0].screenX;
             const diff = touchStartX - touchEndX;
-
             if (Math.abs(diff) > 50) {
                 if (diff > 0 && current < total - 1) {
                     goToSlide(current + 1);
