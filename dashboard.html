@@ -74,18 +74,19 @@
             position: fixed;
             bottom: 20px; left: 20px; right: 20px;
             height: 64px;
-            background: rgba(1, 22, 39, 0.98);
+            background: var(--white);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--white);
             z-index: 1000;
         }
-        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; transition: 0.2s; }
-        .nav-link.active { color: var(--white); }
-        .nav-link svg { width: 20px; height: 20px; }
-        .nav-label { font-size: 0.65rem; font-weight: 600; }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; flex: 1; transition: 0.2s; }
+        .nav-link.active { color: var(--primary); }
+        .nav-link svg { width: 22px; height: 22px; }
+        .nav-label { font-size: 0.65rem; font-weight: 700; }
 
         #shimmer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .skeleton { background: #eee; border-radius: 16px; height: 220px; animation: pulse 1.2s infinite ease-in-out; }
@@ -120,7 +121,7 @@
     </div>
 
     <nav class="nav">
-        <a href="dashboard.html" class="nav-link">
+        <a href="dashboard.html" class="nav-link active">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span class="nav-label">Asosiy</span>
         </a>
@@ -153,7 +154,7 @@
                 if (res.success && res.data?.content?.length > 0) {
                     grid.innerHTML = res.data.content.map(p => `
                         <div class="product-card" onclick="tg.HapticFeedback.impactOccurred('light')">
-                            <img src="${p.cover}" class="product-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/300?text=Loopa'">
+                            <img src="${p.cover}" class="product-cover" loading="lazy">
                             <div class="product-info">
                                 <div class="recommend-badge">⭐ ${p.recommendedCount || 0} tavsiya</div>
                                 <h3 class="product-name">${p.name}</h3>
@@ -171,9 +172,7 @@
             }
         }
 
-        const path = window.location.pathname.split("/").pop() || 'dashboard.html';
         document.querySelectorAll('.nav-link').forEach(link => {
-            if (link.getAttribute('href') === path) link.classList.add('active');
             link.addEventListener('click', () => tg.HapticFeedback.impactOccurred('medium'));
         });
 
