@@ -8,7 +8,6 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
         body{background:#fff;color:#000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;height:100vh;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:80px 40px 60px;text-align:center;overflow:hidden}
-        .container{max-width:420px;width:100%;height:100%;background:#fff;display:flex;flex-direction:column;justify-content:space-between;align-items:center;border-radius:28px;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.1)}
         .illustration{width:260px;height:260px;border-radius:32px;object-fit:cover;box-shadow:0 20px 40px rgba(1,22,39,0.12);margin-bottom:60px}
         .title{font-size:2.6em;font-weight:800;line-height:1.2;margin-bottom:20px}
         .subtitle{font-size:1.2em;color:#555;line-height:1.7;max-width:90%;margin-bottom:60px}
@@ -17,16 +16,14 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <img class="illustration" src="https://cdn.dribbble.com/userupload/41559485/file/original-f91258332b25058c27cfad3c2901abcf.png?resize=800x600" alt="Loopa">
+    <img class="illustration" src="https://cdn.dribbble.com/userupload/41559485/file/original-f91258332b25058c27cfad3c2901abcf.png?resize=800x600" alt="Loopa">
 
-        <div>
-            <h1 class="title">Loopa'ga<br>Xush Kelibsiz</h1>
-            <p class="subtitle">Qulay va zamonaviy onlayn xarid tajribasi. Minglab mahsulotlar bir joyda.</p>
-        </div>
-
-        <button class="btn" id="startBtn">Boshlash</button>
+    <div>
+        <h1 class="title">Loopa'ga<br>Xush Kelibsiz</h1>
+        <p class="subtitle">Qulay va zamonaviy onlayn xarid tajribasi. Minglab mahsulotlar bir joyda.</p>
     </div>
+
+    <button class="btn" id="startBtn">Boshlash</button>
 
     <script>
         if(window.Telegram&&Telegram.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand()}
