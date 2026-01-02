@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Loopa - Dashboard</title>
-    <link rel="preload" href="/assets/logo.png" as="image">
+    <title>Loopa</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -66,7 +65,18 @@
         .product-info { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
         .product-name { font-size: 0.85rem; font-weight: 600; line-height: 1.4; height: 2.8em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .product-price { font-size: 0.95rem; font-weight: 800; color: var(--accent); margin-top: auto; }
-        .recommend-badge { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+        .empty-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 60px;
+            text-align: center;
+        }
+        .empty-container img { width: 160px; height: 160px; margin-bottom: 16px; opacity: 0.9; }
+        .empty-container h3 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+        .empty-container p { font-size: 0.9rem; color: var(--text-muted); max-width: 240px; line-height: 1.5; }
 
         .nav {
             position: fixed;
@@ -86,7 +96,7 @@
         .nav-label { font-size: 0.65rem; font-weight: 600; }
 
         #shimmer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .skeleton { background: #eee; border-radius: 16px; height: 220px; animation: pulse 1.2s infinite; }
+        .skeleton { background: #eee; border-radius: 16px; height: 220px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
     </style>
 </head>
@@ -107,7 +117,14 @@
         <div id="shimmer">
             <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
         </div>
+        
         <div class="products-grid" id="productsGrid"></div>
+
+        <div id="emptyState" class="empty-container">
+            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="Bo'sh">
+            <h3>Hech narsa topilmadi</h3>
+            <p>Siz qidirayotgan mahsulotlar hozircha mavjud emas</p>
+        </div>
     </div>
 
     <nav class="nav">
@@ -132,6 +149,7 @@
             const token = localStorage.getItem('token');
             const grid = document.getElementById('productsGrid');
             const shimmer = document.getElementById('shimmer');
+            const empty = document.getElementById('emptyState');
 
             try {
                 const response = await fetch('https://api.loopa.buzz/api/products/for-user?page=0&size=20', {
@@ -140,20 +158,22 @@
                 const res = await response.json();
                 shimmer.style.display = 'none';
 
-                if (res.success && res.data?.content) {
+                if (res.success && res.data?.content && res.data.content.length > 0) {
                     grid.innerHTML = res.data.content.map(p => `
                         <div class="product-card" onclick="tg.HapticFeedback.impactOccurred('light')">
-                            <img src="${p.cover}" class="product-cover" loading="lazy">
+                            <img src="${p.cover}" class="product-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/300?text=Loopa'">
                             <div class="product-info">
-                                <div class="recommend-badge">⭐ ${p.recommendedCount || 0}</div>
                                 <h3 class="product-name">${p.name}</h3>
                                 <p class="product-price">${Number(p.price).toLocaleString()} so'm</p>
                             </div>
                         </div>
                     `).join('');
+                } else {
+                    empty.style.display = 'flex';
                 }
             } catch (e) {
                 shimmer.style.display = 'none';
+                empty.style.display = 'flex';
             }
         }
 
