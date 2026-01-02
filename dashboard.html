@@ -13,10 +13,11 @@
             --bg: #f8f9fa;
             --text-main: #1a1a1a;
             --text-muted: #6c757d;
+            --nav-bg: rgba(255, 255, 255, 0.85);
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+        body { background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--text-main); min-height: 100vh; overflow-x: hidden; padding-bottom: 85px; }
 
         header {
             background: #fff;
@@ -28,11 +29,10 @@
             top: 0;
             z-index: 100;
             box-shadow: 0 1px 10px rgba(0,0,0,0.03);
-            will-change: transform;
         }
 
         .brand { display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .logo { width: 26px; height: 26px; object-fit: contain; image-rendering: -webkit-optimize-contrast; }
+        .logo { width: 26px; height: 26px; object-fit: contain; }
         .brand-name { font-size: 1.3rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
 
         .search-bar {
@@ -43,9 +43,9 @@
             align-items: center;
             gap: 8px;
         }
-        .search-bar input { border: none; background: transparent; width: 100%; font-size: 0.9rem; outline: none; color: var(--text-main); }
+        .search-bar input { border: none; background: transparent; width: 100%; font-size: 0.9rem; outline: none; }
 
-        .container { padding: 12px; display: flex; flex-direction: column; }
+        .container { padding: 12px; }
 
         .products-grid {
             display: grid;
@@ -60,7 +60,6 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            transform: translateZ(0);
         }
         .product-card:active { transform: scale(0.98); }
 
@@ -69,23 +68,49 @@
         .product-name { font-size: 0.85rem; font-weight: 600; line-height: 1.3; height: 2.6em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: var(--primary); }
         .product-price { font-size: 0.95rem; font-weight: 800; color: var(--accent); margin-top: auto; }
         
-        .recommend-badge { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px; display: flex; align-items: center; gap: 3px; }
+        .recommend-badge { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 3px; }
 
-        .empty-state {
-            display: none;
+        .navbar {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 65px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.3);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 80px 40px;
+            gap: 4px;
+            color: var(--text-muted);
+            text-decoration: none;
+            flex: 1;
+            transition: all 0.2s;
         }
-        .empty-img { width: 140px; height: auto; margin-bottom: 20px; }
-        .empty-title { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
-        .empty-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+        .nav-item.active { color: var(--accent); }
+        .nav-item svg { width: 22px; height: 22px; transition: transform 0.2s; }
+        .nav-item:active svg { transform: scale(0.9); }
+        .nav-text { font-size: 0.7rem; font-weight: 600; }
 
         #shimmer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .skeleton { background: #eee; border-radius: 16px; height: 200px; animation: pulse 1.2s infinite ease-in-out; }
         @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+        .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
+        .empty-img { width: 120px; margin-bottom: 15px; opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -103,20 +128,29 @@
 
     <div class="container">
         <div id="shimmer">
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
+            <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
         </div>
-
         <div class="products-grid" id="productsGrid"></div>
-
         <div class="empty-state" id="emptyState">
             <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" class="empty-img">
-            <h2 class="empty-title">Hech narsa topilmadi</h2>
-            <p class="empty-desc">Sizga mos mahsulotlar tez orada qo'shiladi.</p>
+            <p style="font-weight:700">Mahsulotlar topilmadi</p>
         </div>
     </div>
+
+    <nav class="navbar">
+        <a href="#" class="nav-item active" onclick="navClick(this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span class="nav-text">Asosiy</span>
+        </a>
+        <a href="#" class="nav-item" onclick="navClick(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span class="nav-text">Sevimlilar</span>
+        </a>
+        <a href="#" class="nav-item" onclick="navClick(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span class="nav-text">Profil</span>
+        </a>
+    </nav>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -131,12 +165,10 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const res = await response.json();
-                
                 shimmer.style.display = 'none';
-
                 if (res.success && res.data?.content?.length > 0) {
                     grid.innerHTML = res.data.content.map(p => `
-                        <div class="product-card" onclick="clickItem('${p.id}')">
+                        <div class="product-card" onclick="tg.HapticFeedback.impactOccurred('light')">
                             <img src="${p.cover}" class="product-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/300?text=Loopa'">
                             <div class="product-info">
                                 <div class="recommend-badge">⭐ ${p.recommendedCount || 0}</div>
@@ -151,13 +183,14 @@
                 }
             } catch (e) {
                 shimmer.style.display = 'none';
-                grid.style.display = 'none';
                 emptyState.style.display = 'flex';
             }
         }
 
-        function clickItem(id) {
-            tg.HapticFeedback.impactOccurred('light');
+        function navClick(el) {
+            tg.HapticFeedback.impactOccurred('medium');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
         }
 
         tg.ready();
