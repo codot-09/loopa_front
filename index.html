@@ -14,8 +14,8 @@
             user-select: none;
         }
         body {
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
+            background-color: #FFFFFF;
+            color: #011627;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             height: 100vh;
@@ -37,7 +37,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 80px 30px 60px;
+            padding: 60px 24px 100px;
             text-align: center;
         }
         .content {
@@ -48,67 +48,68 @@
             align-items: center;
         }
         .illustration {
-            width: 260px;
-            height: 260px;
-            margin-bottom: 60px;
+            width: 240px;
+            height: 240px;
+            margin-bottom: 48px;
             border-radius: 20px;
             object-fit: cover;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 12px 28px rgba(1,22,39,0.1);
         }
         h1 {
-            font-size: 2.4em;
-            color: var(--tg-theme-text-color, #011627);
-            margin-bottom: 16px;
+            font-size: 2.2em;
+            color: #011627;
+            margin-bottom: 14px;
             font-weight: 700;
+            line-height: 1.2;
         }
         p {
-            font-size: 1.15em;
-            color: var(--tg-theme-hint-color, #666666);
-            max-width: 85%;
-            line-height: 1.7;
+            font-size: 1.1em;
+            color: #555555;
+            max-width: 80%;
+            line-height: 1.6;
         }
         .features {
-            margin: 40px 0;
+            margin: 30px 0;
             width: 100%;
         }
         .feature {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 40px 0;
+            margin: 32px 0;
         }
         .feature img {
-            width: 76px;
-            height: 76px;
-            margin-bottom: 20px;
+            width: 68px;
+            height: 68px;
+            margin-bottom: 18px;
         }
         .feature h3 {
-            font-size: 1.35em;
-            color: var(--tg-theme-text-color, #011627);
-            margin-bottom: 10px;
+            font-size: 1.3em;
+            color: #011627;
+            margin-bottom: 8px;
             font-weight: 600;
         }
         .feature p {
-            font-size: 1.05em;
-            color: var(--tg-theme-hint-color, #777777);
+            font-size: 1em;
+            color: #666666;
         }
         .btn-container {
             position: fixed;
-            bottom: 30px;
+            bottom: 32px;
             left: 50%;
             transform: translateX(-50%);
-            width: calc(100% - 60px);
-            padding: 0 10px;
+            width: calc(100% - 48px);
+            max-width: 400px;
         }
         .btn {
-            background-color: var(--tg-theme-button-color, #011627);
-            color: var(--tg-theme-button-text-color, #ffffff);
+            background-color: #011627;
+            color: #FFFFFF;
             border: none;
-            padding: 18px 40px;
+            padding: 18px 32px;
             font-size: 1.25em;
             border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 22px rgba(1,22,39,0.22);
             transition: all 0.25s ease;
             width: 100%;
             font-weight: 600;
@@ -119,22 +120,22 @@
         }
         .dots {
             position: fixed;
-            bottom: 110px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
         .dot {
-            width: 10px;
-            height: 10px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
-            background-color: var(--tg-theme-hint-color, #cccccc);
+            background-color: #CCCCCC;
             transition: all 0.4s ease;
         }
         .dot.active {
-            background-color: var(--tg-theme-button-color, #011627);
-            width: 30px;
+            background-color: #011627;
+            width: 28px;
             border-radius: 20px;
         }
     </style>
@@ -146,7 +147,7 @@
                 <div class="content">
                     <img class="illustration" src="https://cdn.dribbble.com/userupload/16118312/file/original-6c2a5118ea1abaa06164d71b337148ee.jpg" alt="Xush kelibsiz">
                     <h1>Salom Loopga Xush Kelibsiz</h1>
-                    <p>Eng zamonaviy va qulay onlayn xarid tajribasi sizni kutmoqda. Minglab mahsulotlar bir joyda.</p>
+                    <p>Qulay va zamonaviy onlayn xarid tajribasi. Minglab mahsulotlar bir joyda.</p>
                 </div>
             </div>
 
@@ -156,17 +157,17 @@
                         <div class="feature">
                             <img src="https://static.vecteezy.com/system/resources/thumbnails/071/967/212/small/collection-of-online-shopping-and-electronic-commerce-icon-for-website-and-application-design-vector.jpg" alt="Katta tanlov">
                             <h3>Katta Tanlov</h3>
-                            <p>Turli kategoriyalardagi minglab yuqori sifatli mahsulotlar</p>
+                            <p>Turli kategoriyalarda minglab mahsulotlar</p>
                         </div>
                         <div class="feature">
                             <img src="https://img.freepik.com/premium-vector/vector-fast-delivery-icon-illustration_723554-1032.jpg" alt="Qulay interfeys">
                             <h3>Qulay Interfeys</h3>
-                            <p>Mahsulotlarni osongina toping va tanlang</p>
+                            <p>Oson qidiruv va tez navigatsiya</p>
                         </div>
                         <div class="feature">
-                            <img src="https://as2.ftcdn.net/jpg/06/17/54/93/1000_F_617549379_5dlHTHnOgN1l4Pff9kJXkEXw0o5ugF4F.jpg" alt="Doimiy chegirmalar">
+                            <img src="https://as2.ftcdn.net/jpg/06/17/54/93/1000_F_617549379_5dlHTHnOgN1l4Pff9kJXkEXw0o5ugF4F.jpg" alt="Chegirmalar">
                             <h3>Doimiy Chegirmalar</h3>
-                            <p>Maxsus takliflar va aksiyalar bilan tejang</p>
+                            <p>Aksiyalar va maxsus takliflar</p>
                         </div>
                     </div>
                 </div>
@@ -176,7 +177,7 @@
                 <div class="content">
                     <img class="illustration" src="https://framerusercontent.com/images/170uhVLUqcBJUZuJfN3BpcMsY.jpg?width=1536&height=1024" alt="Boshlash">
                     <h1>Boshlashga Tayyormisiz?</h1>
-                    <p>Salom Loop bilan yangi xarid tajribasini boshlang!</p>
+                    <p>Yangi xarid tajribangizni hozir boshlang!</p>
                 </div>
             </div>
         </div>
@@ -193,7 +194,6 @@
     </div>
 
     <script>
-        // Telegram WebApp integration
         if (window.Telegram && Telegram.WebApp) {
             Telegram.WebApp.ready();
             Telegram.WebApp.expand();
@@ -215,40 +215,28 @@
             wrapper.style.transform = `translateX(-${index * 100}vw)`;
             current = index;
             updateDots();
-
-            if (current === total - 1) {
-                nextBtn.textContent = 'Boshlash';
-            } else {
-                nextBtn.textContent = 'Keyingisi';
-            }
+            nextBtn.textContent = current === total - 1 ? 'Boshlash' : 'Keyingisi';
         }
 
         nextBtn.addEventListener('click', () => {
             if (current < total - 1) {
                 goToSlide(current + 1);
             } else {
-                // Asosiy sahifaga o'tish (demo)
-                alert('Asosiy sahifaga xush kelibsiz!');
+                alert('Asosiy sahifaga xush kelibsiz! (Demo)');
             }
         });
 
-        // Swipe support
         let touchStartX = 0;
-        let touchEndX = 0;
-
         document.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });
 
         document.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
+            const touchEndX = e.changedTouches[0].screenX;
             const diff = touchStartX - touchEndX;
             if (Math.abs(diff) > 50) {
-                if (diff > 0 && current < total - 1) {
-                    goToSlide(current + 1);
-                } else if (diff < 0 && current > 0) {
-                    goToSlide(current - 1);
-                }
+                if (diff > 0 && current < total - 1) goToSlide(current + 1);
+                else if (diff < 0 && current > 0) goToSlide(current - 1);
             }
         }, { passive: true });
     </script>
