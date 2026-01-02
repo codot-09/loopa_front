@@ -19,34 +19,67 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             height: 100vh;
+        }
+        .container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+        .slides-wrapper {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .slide {
+            width: 100vw;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 70px 32px 100px;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 32px 120px;
             text-align: center;
         }
-        .logo {
-            width: 200px;
-            height: 200px;
-            margin-bottom: 60px;
-            border-radius: 32px;
+        .image {
+            width: 100%;
+            max-width: 320px;
+            height: 380px;
+            border-radius: 28px;
             object-fit: cover;
-            box-shadow: 0 16px 40px rgba(1,22,39,0.14);
+            box-shadow: 0 20px 40px rgba(1,22,39,0.15);
+            margin-bottom: 50px;
         }
         h1 {
-            font-size: 2.6em;
+            font-size: 2.4em;
             color: #011627;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             font-weight: 800;
             line-height: 1.2;
-            letter-spacing: -0.5px;
         }
         p {
-            font-size: 1.2em;
+            font-size: 1.15em;
             color: #555555;
             max-width: 85%;
-            margin: 0 auto 50px;
-            line-height: 1.7;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        .dots {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #CCCCCC;
+            transition: all 0.4s ease;
+        }
+        .dot.active {
+            background-color: #011627;
+            width: 24px;
+            border-radius: 12px;
         }
         .btn-container {
             position: fixed;
@@ -60,11 +93,11 @@
             background-color: #011627;
             color: #FFFFFF;
             border: none;
-            padding: 22px 40px;
-            font-size: 1.35em;
+            padding: 16px 40px;
+            font-size: 1.3em;
             border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 12px 28px rgba(1,22,39,0.24);
+            box-shadow: 0 10px 25px rgba(1,22,39,0.22);
             transition: transform 0.25s ease;
             width: 100%;
             font-weight: 700;
@@ -76,15 +109,34 @@
     </style>
 </head>
 <body>
-    <img class="logo" src="https://cdn.dribbble.com/userupload/16118312/file/original-6c2a5118ea1abaa06164d71b337148ee.jpg" alt="Loopa">
+    <div class="container">
+        <div class="slides-wrapper" id="slidesWrapper">
+            <div class="slide">
+                <img class="image" src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=800&q=80" alt="Loopa 1">
+                <h1>Loopa'ga Xush Kelibsiz</h1>
+                <p>Qulay va zamonaviy onlayn xarid tajribasi sizni kutmoqda</p>
+            </div>
+            <div class="slide">
+                <img class="image" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80" alt="Loopa 2">
+                <h1>Katta Tanlov</h1>
+                <p>Minglab yuqori sifatli mahsulotlar bir joyda</p>
+            </div>
+            <div class="slide">
+                <img class="image" src="https://images.unsplash.com/photo-1574634534897-5c9e9f3c9e9f?w=800&q=80" alt="Loopa 3">
+                <h1>Boshlashga Tayyor</h1>
+                <p>Yangi xarid tajribangizni hozir boshlang</p>
+            </div>
+        </div>
 
-    <div>
-        <h1>Loopa'ga Xush Kelibsiz</h1>
-        <p>Qulay va zamonaviy onlayn xarid tajribasi. Minglab mahsulotlar bir joyda.</p>
-    </div>
+        <div class="dots" id="dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
 
-    <div class="btn-container">
-        <button class="btn" id="startBtn">Boshlash</button>
+        <div class="btn-container">
+            <button class="btn" id="nextBtn">Keyingisi</button>
+        </div>
     </div>
 
     <script>
@@ -93,9 +145,46 @@
             Telegram.WebApp.expand();
         }
 
-        document.getElementById('startBtn').addEventListener('click', () => {
-            alert('Asosiy sahifaga xush kelibsiz!');
+        const wrapper = document.getElementById('slidesWrapper');
+        const nextBtn = document.getElementById('nextBtn');
+        const dots = document.querySelectorAll('.dot');
+        let current = 0;
+        const total = 3;
+
+        function updateUI() {
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === current));
+            nextBtn.textContent = current === total - 1 ? 'Boshlash' : 'Keyingisi';
+        }
+
+        function goToSlide(index) {
+            wrapper.style.transform = `translateX(-${index * 100}vw)`;
+            current = index;
+            updateUI();
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (current < total - 1) {
+                goToSlide(current + 1);
+            } else {
+                alert('Asosiy sahifaga xush kelibsiz!');
+            }
         });
+
+        let touchStartX = 0;
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && current < total - 1) goToSlide(current + 1);
+                else if (diff < 0 && current > 0) goToSlide(current - 1);
+            }
+        }, { passive: true });
+
+        updateUI();
     </script>
 </body>
 </html>
