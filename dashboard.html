@@ -112,13 +112,15 @@
                 emptyState.style.display = 'flex';
             }
         }
+        
+        const path = window.location.pathname.split("/").pop() || 'dashboard.html';
         document.querySelectorAll('.nav-item').forEach(item => {
-            const currentPath = window.location.pathname.split("/").pop() || 'dashboard.html';
-            if (item.getAttribute('href') === currentPath) item.classList.add('active');
-            item.onclick = (e) => {
+            if (item.getAttribute('href') === path) item.classList.add('active');
+            item.addEventListener('click', () => {
                 tg.HapticFeedback.impactOccurred('medium');
-            };
+            });
         });
+
         tg.ready();
         tg.expand();
         load();
