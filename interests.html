@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Loopa - Qiziqishlar</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8f9fa;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+        body{background:var(--bg);color:var(--primary);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;display:flex;flex-direction:column;padding-bottom:100px}
+        
+        header{padding:40px 20px 20px;text-align:center;background:#fff;border-radius:0 0 32px 32px;box-shadow:0 4px 20px rgba(0,0,0,0.05)}
+        .profile-img{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,0.1);margin-bottom:16px}
+        .username{font-size:1.8em;font-weight:800;letter-spacing:-0.5px}
+        .greeting{font-size:1.05em;color:#6c757d;margin-top:8px}
+
+        .container{padding:25px 20px}
+        .categories-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        
+        .category-item {
+            background: #fff;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 20px 15px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        
+        .category-item.selected {
+            border-color: var(--accent);
+            background: #eef4ff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(58, 134, 255, 0.15);
+        }
+
+        .cat-icon { font-size: 2em; }
+        .cat-name { font-weight: 600; font-size: 0.95em; }
+
+        .footer-action {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, var(--bg) 80%, rgba(248, 249, 250, 0));
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border-radius: 20px;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(1, 22, 39, 0.25);
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+        .btn:active:not(:disabled) { transform: scale(0.97); }
+
+        .loader {
+            width: 20px; height: 20px; border: 3px solid #fff;
+            border-bottom-color: transparent; border-radius: 50%;
+            display: none; animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
+    </style>
+</head>
+<body>
+    <header>
+        <img id="profileImg" class="profile-img" src="" alt="">
+        <div id="username" class="username">Salom!</div>
+        <p class="greeting">O'zingizga mos mahsulotlarni topishimiz uchun kamida bitta kategoriya tanlang:</p>
+    </header>
+    
+    <div class="container">
+        <div class="categories-grid" id="grid">
+            </div>
+    </div>
+    
+    <div class="footer-action">
+        <button class="btn" id="submitBtn" disabled>
+            <span>Davom etish</span>
+            <div class="loader" id="loader"></div>
+        </button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const categories = [
+            { id: 'ELECTRONICS', name: 'Elektronika', icon: '💻' },
+            { id: 'HOME', name: 'Uy jihozlari', icon: '🏠' },
+            { id: 'TOYS', name: 'O\'yinchoqlar', icon: '🧸' },
+            { id: 'SPORT_INSTRUMENTS', name: 'Sport', icon: '⚽' },
+            { id: 'CLOTHES', name: 'Kiyim-kechak', icon: '👕' },
+            { id: 'BEAUTY', name: 'Go\'zallik', icon: '✨' }
+        ];
+
+        let selected = new Set();
+
+        function init() {
+            tg.ready();
+            tg.expand();
+            
+            // Profil ma'lumotlari
+            const user = tg.initDataUnsafe?.user;
+            if(user) {
+                document.getElementById('username').textContent = `Salom, ${user.first_name}!`;
+                document.getElementById('profileImg').src = user.photo_url || `https://ui-avatars.com/api/?name=${user.first_name}&background=random`;
+            }
+
+            // Gridni to'ldirish
+            const grid = document.getElementById('grid');
+            categories.forEach(cat => {
+                const div = document.createElement('div');
+                div.className = 'category-item';
+                div.innerHTML = `<span class="cat-icon">${cat.icon}</span><span class="cat-name">${cat.name}</span>`;
+                div.onclick = () => toggleCategory(cat.id, div);
+                grid.appendChild(div);
+            });
+        }
+
+        function toggleCategory(id, el) {
+            if(selected.has(id)) {
+                selected.delete(id);
+                el.classList.remove('selected');
+            } else {
+                selected.add(id);
+                el.classList.add('selected');
+            }
+            document.getElementById('submitBtn').disabled = selected.size === 0;
+        }
+
+        document.getElementById('submitBtn').onclick = async function() {
+            const btn = this;
+            const loader = document.getElementById('loader');
+            const token = localStorage.getItem('token');
+
+            btn.disabled = true;
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch('https://api.loopa.buzz/api/user/interests', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(Array.from(selected))
+                });
+
+                const result = await response.json();
+
+                if(result.success) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(result.message || "Xatolik yuz berdi");
+                }
+            } catch (e) {
+                alert("Server bilan aloqa yo'q");
+            } finally {
+                btn.disabled = false;
+                loader.style.display = 'none';
+            }
+        };
+
+        init();
+    </script>
+</body>
+</html>
