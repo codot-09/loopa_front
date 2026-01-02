@@ -1,240 +1,45 @@
+<!-- dashboard.html -->
 <!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Loopa – Marketplace</title>
+    <title>Loopa</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-        body {
-            background-color: #FFFFFF;
-            color: #011627;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-        header {
-            padding: 20px 20px 16px;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        h1 {
-            font-size: 1.8em;
-            font-weight: 800;
-            color: #011627;
-        }
-        .search-bar {
-            margin: 20px 20px 16px;
-            position: relative;
-        }
-        .search-bar input {
-            width: 100%;
-            padding: 14px 20px 14px 48px;
-            font-size: 1.1em;
-            border: 1px solid #e0e0e0;
-            border-radius: 20px;
-            background-color: #f9f9f9;
-            outline: none;
-        }
-        .search-bar::before {
-            content: "🔍";
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.3em;
-            opacity: 0.6;
-        }
-        .categories {
-            display: flex;
-            overflow-x: auto;
-            padding: 0 20px 16px;
-            gap: 12px;
-            scrollbar-width: none;
-        }
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
-        .category {
-            flex-shrink: 0;
-            padding: 10px 20px;
-            background-color: #f0f0f0;
-            border-radius: 20px;
-            font-size: 0.95em;
-            font-weight: 600;
-            color: #011627;
-            white-space: nowrap;
-        }
-        .category.active {
-            background-color: #011627;
-            color: #FFFFFF;
-        }
-        .products {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            padding: 0 20px;
-            margin-top: 8px;
-        }
-        .product-card {
-            background-color: #FFFFFF;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(1,22,39,0.08);
-            transition: transform 0.2s ease;
-        }
-        .product-card:active {
-            transform: scale(0.96);
-        }
-        .product-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            background-color: #f5f5f5;
-        }
-        .product-info {
-            padding: 14px;
-        }
-        .product-name {
-            font-size: 1em;
-            font-weight: 600;
-            color: #011627;
-            margin-bottom: 6px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .product-price {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: #011627;
-        }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #FFFFFF;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-        }
-        .nav-item {
-            text-align: center;
-            font-size: 0.9em;
-            color: #888888;
-        }
-        .nav-item.active {
-            color: #011627;
-            font-weight: 600;
-        }
-        .nav-item span {
-            display: block;
-            font-size: 1.6em;
-            margin-bottom: 4px;
-        }
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+        body{background:#fff;color:#000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden;border-radius:24px}
+        .container{max-width:420px;width:100%;height:100%;background:#fff;display:flex;flex-direction:column;box-shadow:0 0 30px rgba(0,0,0,0.1);border-radius:24px;overflow:hidden}
+        header{padding:30px 30px 20px;text-align:center}
+        .username{font-size:2em;font-weight:800;margin-bottom:20px}
+        .text{font-size:1.15em;color:#555;margin-bottom:40px}
+        .categories{width:100%;display:flex;flex-direction:column;gap:14px;align-items:center;padding:0 30px 60px}
+        .category{background:#e8e8e8;color:#000;padding:16px 28px;border-radius:30px;font-size:1.1em;font-weight:500;width:85%;max-width:340px}
+        .btn{background:#011627;color:#fff;border:none;padding:18px 40px;font-size:1.3em;font-weight:600;border-radius:30px;width:85%;max-width:340px;cursor:pointer;box-shadow:0 8px 20px rgba(1,22,39,0.2);transition:transform .2s;position:fixed;bottom:40px;left:50%;transform:translateX(-50%)}
+        .btn:active{transform:translateX(-50%) scale(0.96)}
     </style>
 </head>
 <body>
-    <header>
-        <h1>Loopa</h1>
-    </header>
-
-    <div class="search-bar">
-        <input type="text" placeholder="Mahsulot qidirish...">
-    </div>
-
-    <div class="categories">
-        <div class="category active">Hammasi</div>
-        <div class="category">Elektronika</div>
-        <div class="category">Kiyim</div>
-        <div class="category">Uy-ro'zg'or</div>
-        <div class="category">Go'zallik</div>
-    </div>
-
-    <div class="products">
-        <!-- Test mahsulotlar -->
-        <div class="product-card">
-            <img class="product-image" src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" alt="Naushnik">
-            <div class="product-info">
-                <div class="product-name">Simsiz naushnik</div>
-                <div class="product-price">450 000 so'm</div>
-            </div>
+    <div class="container">
+        <header>
+            <div class="username">Salom, Otabek Nabiyev</div>
+            <div class="text">Qaysi mahsulotlarga qiziqasiz:</div>
+        </header>
+        
+        <div class="categories">
+            <div class="category">Elektronika</div>
+            <div class="category">Uy jihozlari</div>
+            <div class="category">O'yinchoqlar</div>
+            <div class="category">Sport anjomlari</div>
+            <div class="category">Kiyim-kechak</div>
+            <div class="category">Kosmetika va go'zallik</div>
         </div>
-        <div class="product-card">
-            <img class="product-image" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" alt="Krossovka">
-            <div class="product-info">
-                <div class="product-name">Sport krossovka</div>
-                <div class="product-price">890 000 so'm</div>
-            </div>
-        </div>
-        <div class="product-card">
-            <img class="product-image" src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80" alt="Smartfon">
-            <div class="product-info">
-                <div class="product-name">Yangi smartfon</div>
-                <div class="product-price">3 200 000 so'm</div>
-            </div>
-        </div>
-        <div class="product-card">
-            <img class="product-image" src="https://images.unsplash.com/photo-1583394838336-8e7c6b8c3b03?w=500&q=80" alt="Sumka">
-            <div class="product-info">
-                <div class="product-name">Ayollar sumkasi</div>
-                <div class="product-price">650 000 so'm</div>
-            </div>
-        </div>
-        <div class="product-card">
-            <img class="product-image" src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=500&q=80" alt="Soat">
-            <div class="product-info">
-                <div class="product-name">Aqlli soat</div>
-                <div class="product-price">1 200 000 so'm</div>
-            </div>
-        </div>
-        <div class="product-card">
-            <img class="product-image" src="https://images.unsplash.com/photo-1592899678447-7e8e3f7c98a7?w=500&q=80" alt="Kamera">
-            <div class="product-info">
-                <div class="product-name">Professional kamera</div>
-                <div class="product-price">8 500 000 so'm</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active">
-            <span>🏠</span>
-            Bosh sahifa
-        </div>
-        <div class="nav-item">
-            <span>🔍</span>
-            Qidiruv
-        </div>
-        <div class="nav-item">
-            <span>❤️</span>
-            Sevimlilar
-        </div>
-        <div class="nav-item">
-            <span>🛒</span>
-            Savat
-        </div>
-        <div class="nav-item">
-            <span>👤</span>
-            Profil
-        </div>
+        
+        <button class="btn">Davom etish</button>
     </div>
 
     <script>
-        if (window.Telegram && Telegram.WebApp) {
-            Telegram.WebApp.ready();
-            Telegram.WebApp.expand();
-        }
+        if(window.Telegram&&Telegram.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand()}
     </script>
 </body>
 </html>
