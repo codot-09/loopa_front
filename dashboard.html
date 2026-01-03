@@ -17,12 +17,12 @@
             --hot: linear-gradient(135deg, #ff0055, #ff5e3a);
             --new: linear-gradient(135deg, #00f2fe, #4facfe);
             --sale: linear-gradient(135deg, #f9d423, #ff4e50);
-            --timer-bg: rgba(255, 59, 48, 0.07);
+            --timer-bg: rgba(255, 59, 48, 0.08);
             --timer-text: #ff3b30;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--text-main); min-height: 100vh; padding-bottom: 100px; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--text-main); min-height: 100vh; padding-bottom: 110px; }
 
         header {
             background: var(--white);
@@ -33,11 +33,11 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
 
-        .brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
-        .logo { width: 28px; height: 28px; object-fit: contain; }
-        .brand-name { font-size: 1.3rem; font-weight: 900; letter-spacing: -0.8px; color: var(--primary); }
+        .brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
+        .logo { width: 30px; height: 30px; object-fit: contain; }
+        .brand-name { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.8px; color: var(--primary); }
 
-        .search-area { position: relative; width: 100%; margin-bottom: 14px; }
+        .search-area { position: relative; width: 100%; margin-bottom: 16px; }
         .search-bar {
             background: #f1f3f5;
             border-radius: 12px;
@@ -45,8 +45,10 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            border: 1px solid transparent;
         }
-        .search-bar input { border: none; background: transparent; width: 100%; font-size: 0.9rem; outline: none; }
+        .search-bar:focus-within { background: var(--white); border-color: var(--accent); }
+        .search-bar input { border: none; background: transparent; width: 100%; font-size: 0.95rem; outline: none; }
 
         .search-history {
             position: absolute; top: 100%; left: 0; right: 0;
@@ -56,82 +58,85 @@
             display: none; z-index: 110;
         }
         .search-history.active { display: block; }
-        .history-item { padding: 10px; font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; border-radius: 8px; }
+        .history-item { padding: 10px; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; border-radius: 8px; }
 
         .categories { display: flex; gap: 12px; overflow-x: auto; padding: 5px 0; scrollbar-width: none; }
         .categories::-webkit-scrollbar { display: none; }
-        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 62px; cursor: pointer; }
+        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 65px; cursor: pointer; }
         .cat-icon-wrap {
-            width: 52px; height: 52px; border-radius: 16px;
+            width: 55px; height: 55px; border-radius: 16px;
             background: var(--white); border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; transition: 0.3s;
+            font-size: 1.5rem; transition: 0.3s;
         }
         .category-item.active .cat-icon-wrap { background: var(--accent); transform: scale(1.05); box-shadow: 0 8px 15px rgba(58,134,255,0.2); border-color: var(--accent); }
         .category-item.active .cat-label { color: var(--accent); font-weight: 700; }
-        .cat-label { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); }
+        .cat-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); }
 
-        .container { padding: 10px; }
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .container { padding: 12px; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
         .product-card {
-            background: var(--white); border-radius: 18px;
+            background: var(--white); border-radius: 20px;
             overflow: hidden; display: flex; flex-direction: column;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.03);
             border: 1px solid var(--border); transition: 0.2s;
-            height: 280px; position: relative;
+            height: 310px; position: relative;
         }
-        .product-card:active { transform: scale(0.98); }
+        .product-card:active { transform: scale(0.97); }
 
-        .image-box { position: relative; width: 100%; height: 145px; }
+        .image-box { position: relative; width: 100%; height: 160px; }
         .product-cover { width: 100%; height: 100%; object-fit: cover; }
         
         .status-tag {
-            position: absolute; top: 8px; left: 8px;
-            padding: 3px 7px; border-radius: 6px; font-size: 0.55rem;
-            font-weight: 800; color: white; z-index: 2;
+            position: absolute; top: 10px; left: 10px;
+            padding: 4px 8px; border-radius: 8px; font-size: 0.6rem;
+            font-weight: 800; color: white; text-transform: uppercase;
+            z-index: 2;
         }
 
         .fav-btn {
-            position: absolute; top: 8px; right: 8px;
-            width: 28px; height: 28px; border-radius: 8px;
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(4px);
+            position: absolute; top: 10px; right: 10px;
+            width: 32px; height: 32px; border-radius: 10px;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(4px);
             display: flex; align-items: center; justify-content: center; z-index: 2;
         }
 
-        .product-info { padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .product-name { font-size: 0.8rem; font-weight: 600; line-height: 1.2; height: 2.4em; overflow: hidden; color: #334155; }
+        .product-info { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .product-name { font-size: 0.85rem; font-weight: 600; line-height: 1.3; height: 2.6em; overflow: hidden; color: #334155; }
         
-        .timer-box {
+        .hook-container {
             display: flex; align-items: center; gap: 4px;
             background: var(--timer-bg); color: var(--timer-text);
-            padding: 3px 7px; border-radius: 6px; font-size: 0.65rem; font-weight: 800;
-            width: fit-content; font-variant-numeric: tabular-nums;
+            padding: 4px 8px; border-radius: 8px; font-size: 0.65rem; font-weight: 700;
+            width: fit-content;
         }
+        .hook-icon { font-size: 0.75rem; animation: pulse-icon 1.5s infinite; }
+        @keyframes pulse-icon { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         .price-box {
-            background: #f8fafc; padding: 6px; border-radius: 10px;
+            background: #f8fafc; padding: 8px 10px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             border: 1px solid #f1f5f9; margin-top: auto;
         }
-        .product-price { font-size: 0.9rem; font-weight: 800; color: var(--accent); }
+        .product-price { font-size: 0.95rem; font-weight: 800; color: var(--accent); }
 
         .not-found { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; text-align: center; }
-        .not-found img { width: 150px; opacity: 0.8; }
+        .not-found img { width: 180px; margin-bottom: 20px; }
 
         .nav {
             position: fixed; bottom: 20px; left: 20px; right: 20px;
-            height: 60px; background: rgba(1, 22, 39, 0.98);
-            border-radius: 18px; display: flex; align-items: center;
+            height: 64px; background: rgba(1, 22, 39, 0.98);
+            border-radius: 20px; display: flex; align-items: center;
             justify-content: space-around; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             z-index: 1000;
         }
-        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 3px; color: rgba(255,255,255,0.4); text-decoration: none; flex: 1; }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; }
         .nav-link.active { color: var(--white); }
-        .nav-link svg { width: 18px; height: 18px; }
-        .nav-label { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+        .nav-link svg { width: 20px; height: 20px; }
+        .nav-label { font-size: 0.65rem; font-weight: 600; }
 
-        .skeleton { background: #eef2f7; border-radius: 18px; height: 280px; animation: pulse 1.5s infinite; }
+        .skeleton { background: #eef2f7; border-radius: 20px; height: 310px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { opacity: 0.5; } }
     </style>
 </head>
@@ -144,20 +149,32 @@
         </div>
         <div class="search-area">
             <div class="search-bar">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="3"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="searchInput" placeholder="Mahsulotlarni izlash...">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="searchInput" placeholder="Mahsulot izlash...">
             </div>
             <div class="search-history" id="searchHistory"></div>
         </div>
         <div class="categories">
             <div class="category-item active" data-category="">
-                <div class="cat-icon-wrap">✨</div>
-                <div class="cat-label">Hammasi</div>
+                <div class="cat-icon-wrap">💎</div>
+                <div class="cat-label">Barchasi</div>
             </div>
-            <div class="category-item" data-category="ELECTRONICS"><div class="cat-icon-wrap">⚡</div><div class="cat-label">Gadjetlar</div></div>
-            <div class="category-item" data-category="CLOTHES"><div class="cat-icon-wrap">👕</div><div class="cat-label">Kiyimlar</div></div>
-            <div class="category-item" data-category="HOME"><div class="cat-icon-wrap">🏠</div><div class="cat-label">Uy uchun</div></div>
-            <div class="category-item" data-category="BEAUTY"><div class="cat-icon-wrap">💄</div><div class="cat-label">Go'zallik</div></div>
+            <div class="category-item" data-category="ELECTRONICS">
+                <div class="cat-icon-wrap">⚡</div>
+                <div class="cat-label">Elektronika</div>
+            </div>
+            <div class="category-item" data-category="CLOTHES">
+                <div class="cat-icon-wrap">👔</div>
+                <div class="cat-label">Kiyimlar</div>
+            </div>
+            <div class="category-item" data-category="HOME">
+                <div class="cat-icon-wrap">🪴</div>
+                <div class="cat-label">Uy uchun</div>
+            </div>
+            <div class="category-item" data-category="BEAUTY">
+                <div class="cat-icon-wrap">💄</div>
+                <div class="cat-label">Go'zallik</div>
+            </div>
         </div>
     </header>
 
@@ -168,7 +185,7 @@
         <div class="products-grid" id="productsGrid"></div>
         <div class="not-found" id="notFound">
             <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="Empty">
-            <h3 style="margin-top:15px; font-size: 1rem;">Mahsulot topilmadi</h3>
+            <h3>Hech narsa topilmadi</h3>
         </div>
     </div>
 
@@ -192,49 +209,55 @@
         const API_BASE = 'https://api.loopa.buzz';
         const token = localStorage.getItem('token');
         const input = document.getElementById('searchInput');
+        const historyDiv = document.getElementById('searchHistory');
         const grid = document.getElementById('productsGrid');
         const shim = document.getElementById('shimmer');
         const notFound = document.getElementById('notFound');
-        const historyDiv = document.getElementById('searchHistory');
 
-        let query = '', category = '';
+        let query = '';
+        let category = '';
 
-        function startTimers() {
-            setInterval(() => {
-                document.querySelectorAll('.timer-val').forEach(el => {
-                    let time = el.innerText.split(':').map(Number);
-                    let s = time[0]*3600 + time[1]*60 + time[2] - 1;
-                    if (s <= 0) s = 14400; 
-                    let h = Math.floor(s/3600).toString().padStart(2,'0');
-                    let m = Math.floor((s%3600)/60).toString().padStart(2,'0');
-                    let sec = (s%60).toString().padStart(2,'0');
-                    el.innerText = `${h}:${m}:${sec}`;
-                });
-            }, 1000);
+        function saveHistory(v) {
+            if (!v.trim()) return;
+            let h = JSON.parse(localStorage.getItem('h') || '[]');
+            h = [v, ...h.filter(i => i !== v)].slice(0, 3);
+            localStorage.setItem('h', JSON.stringify(h));
         }
+
+        function showHistory() {
+            const h = JSON.parse(localStorage.getItem('h') || '[]');
+            if (!h.length) return;
+            historyDiv.innerHTML = h.map(i => `<div class="history-item" onclick="setSearch('${i}')">🕒 ${i}</div>`).join('');
+            historyDiv.classList.add('active');
+        }
+
+        function setSearch(v) { input.value = v; query = v; historyDiv.classList.remove('active'); load(); }
 
         async function load() {
             shim.style.display = 'grid'; grid.innerHTML = ''; notFound.style.display = 'none';
-            const url = (!query && !category) ? `${API_BASE}/api/products/for-user` : `${API_BASE}/api/products/search?page=0&size=20&query=${encodeURIComponent(query)}&category=${category}`;
+            const isDefault = !query && !category;
+            const url = isDefault 
+                ? `${API_BASE}/api/products/for-user` 
+                : `${API_BASE}/api/products/search?page=0&size=20&query=${encodeURIComponent(query)}&category=${category}`;
+            
             try {
                 const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
                 const json = await res.json();
                 shim.style.display = 'none';
                 if (json.success && json.data?.content?.length) {
                     grid.innerHTML = json.data.content.map((p, i) => {
-                        const tags = [['var(--hot)', 'HOT'], ['var(--new)', 'YANGI'], ['var(--sale)', 'SALE']];
+                        const tags = [['var(--hot)', 'HOT'], ['var(--new)', 'NEW'], ['var(--sale)', 'SALE']];
                         const t = tags[i % 3];
-                        const rndTime = `${Math.floor(Math.random()*5)+1}:${Math.floor(Math.random()*59)}:${Math.floor(Math.random()*59)}`;
+                        const hooks = ['<span class="hook-icon">⏱</span> 02:45:12 qoldi', '<span class="hook-icon">🔥</span> Tez sotilmoqda', '<span class="hook-icon">🏷</span> -25% Chegirma'];
                         return `
                         <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
                             <div class="image-box">
                                 <span class="status-tag" style="background:${t[0]}">${t[1]}</span>
-                                <div class="fav-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                                <div class="fav-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
                                 <img src="${p.cover}" class="product-cover" onerror="this.src='https://via.placeholder.com/300'">
                             </div>
                             <div class="product-info">
                                 <h3 class="product-name">${p.name}</h3>
-                                <div class="timer-box">⏱ <span class="timer-val">${rndTime}</span></div>
                                 <div class="price-box"><span class="product-price">${Number(p.price).toLocaleString()} so'm</span></div>
                             </div>
                         </div>`;
@@ -243,24 +266,9 @@
             } catch (e) { shim.style.display = 'none'; notFound.style.display = 'flex'; }
         }
 
-        input.addEventListener('focus', () => {
-            const h = JSON.parse(localStorage.getItem('h') || '[]');
-            if (h.length) {
-                historyDiv.innerHTML = h.map(i => `<div class="history-item" onclick="setS('${i}')">🕒 ${i}</div>`).join('');
-                historyDiv.classList.add('active');
-            }
-        });
-        
-        function setS(v) { input.value = v; query = v; historyDiv.classList.remove('active'); load(); }
-
-        input.addEventListener('keypress', (e) => { 
-            if(e.key === 'Enter') { 
-                query = input.value; 
-                let h = JSON.parse(localStorage.getItem('h') || '[]');
-                if(query.trim()) { h = [query, ...h.filter(i => i !== query)].slice(0, 3); localStorage.setItem('h', JSON.stringify(h)); }
-                load(); input.blur(); historyDiv.classList.remove('active');
-            } 
-        });
+        input.addEventListener('focus', showHistory);
+        input.addEventListener('blur', () => setTimeout(() => historyDiv.classList.remove('active'), 200));
+        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') { query = input.value; saveHistory(query); load(); input.blur(); } });
 
         document.querySelectorAll('.category-item').forEach(item => {
             item.addEventListener('click', () => {
@@ -270,7 +278,7 @@
             });
         });
 
-        tg.ready(); tg.expand(); load(); startTimers();
+        tg.ready(); tg.expand(); load();
     </script>
 </body>
 </html>
