@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Saralanganlar</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: rgba(0,0,0,0.05);
+            --danger: #ff4d4d;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--text-main); padding-bottom: 100px; }
+
+        header {
+            background: var(--white); padding: 18px; position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .back-btn { background: #f1f5f9; border: none; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        header h1 { font-size: 1.2rem; font-weight: 800; }
+
+        .container { padding: 16px; }
+        .fav-grid { display: flex; flex-direction: column; gap: 12px; }
+
+        .fav-card {
+            background: var(--white); border-radius: 20px; padding: 12px;
+            display: flex; align-items: center; gap: 12px; border: 1px solid var(--border);
+            position: relative; animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .img-box { width: 85px; height: 85px; border-radius: 14px; overflow: hidden; flex-shrink: 0; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .name { font-size: 0.95rem; font-weight: 700; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .price { font-size: 1rem; font-weight: 800; color: var(--accent); }
+        .stats { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+        .delete-btn {
+            width: 36px; height: 36px; border-radius: 10px; background: #fff5f5;
+            display: flex; align-items: center; justify-content: center; border: none;
+            color: var(--danger); cursor: pointer;
+        }
+
+        .empty-state {
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding-top: 100px; text-align: center; color: var(--text-muted);
+        }
+        .empty-state svg { width: 80px; height: 80px; margin-bottom: 16px; opacity: 0.2; }
+
+        .nav {
+            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 64px;
+            background: var(--primary); border-radius: 20px; display: flex;
+            align-items: center; justify-content: space-around; z-index: 1000;
+        }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.4); text-decoration: none; }
+        .nav-link.active { color: var(--white); }
+        .nav-link svg { width: 22px; height: 22px; }
+        .nav-label { font-size: 0.65rem; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <button class="back-btn" onclick="history.back()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <h1>Saralanganlar</h1>
+    </header>
+
+    <div class="container">
+        <div id="favList" class="fav-grid"></div>
+        
+        <div id="emptyState" class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <p>Hech qanday mahsulot saqlanmagan</p>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <a href="dashboard.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span class="nav-label">Asosiy</span>
+        </a>
+        <a href="favorites.html" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span class="nav-label">Saralangan</span>
+        </a>
+        <a href="profile.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span class="nav-label">Profil</span>
+        </a>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const token = localStorage.getItem('token');
+        const listDiv = document.getElementById('favList');
+        const emptyDiv = document.getElementById('emptyState');
+
+        async function load() {
+            try {
+                const res = await fetch('https://api.loopa.buzz/api/favourite/my', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const json = await res.json();
+                
+                if (json.success && json.data.length > 0) {
+                    emptyDiv.style.display = 'none';
+                    listDiv.innerHTML = json.data.map(p => `
+                        <div class="fav-card" id="card-${p.id}">
+                            <div class="img-box" onclick="location.href='product.html?id=${p.id}'">
+                                <img src="${p.cover}" onerror="this.src='https://via.placeholder.com/100'">
+                            </div>
+                            <div class="info" onclick="location.href='product.html?id=${p.id}'">
+                                <span class="name">${p.name}</span>
+                                <span class="price">${p.price.toLocaleString()} so'm</span>
+                                <div class="stats">🔥 ${p.recommendedCount} kishi tavsiya qildi</div>
+                            </div>
+                            <button class="delete-btn" onclick="remove('${p.id}')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    listDiv.innerHTML = '';
+                    emptyDiv.style.display = 'flex';
+                }
+            } catch (e) { emptyDiv.style.display = 'flex'; }
+        }
+
+        async function remove(id) {
+            tg.showConfirm("Ushbu mahsulotni ro'yxatdan o'chirmoqchimisiz?", async (ok) => {
+                if(!ok) return;
+                try {
+                    const res = await fetch(`https://api.loopa.buzz/api/favourite/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                        const el = document.getElementById(`card-${id}`);
+                        el.style.transform = 'translateX(100px)';
+                        el.style.opacity = '0';
+                        setTimeout(load, 300);
+                    }
+                } catch (e) { tg.showAlert("Xatolik yuz berdi"); }
+            });
+        }
+
+        tg.ready();
+        tg.expand();
+        load();
+    </script>
+</body>
+</html>

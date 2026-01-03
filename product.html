@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mahsulot tafsilotlari</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -16,20 +18,30 @@
             --text-muted: #64748b;
             --border: #e2e8f0;
             --success: #2ec4b6;
+            --danger: #ff4d4d;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); padding-bottom: 100px; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); padding-bottom: 110px; }
 
-        .slider { position: relative; width: 100%; height: 350px; background: #eee; z-index: 1; }
-        .slider img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .back-btn { 
-            position: absolute; top: 20px; left: 20px; z-index: 10; 
-            background: rgba(255,255,255,0.9); border: none; width: 40px; height: 40px; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .swiper { width: 100%; height: 380px; background: #eee; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .swiper-pagination-bullet-active { background: var(--white) !important; }
+
+        .top-actions { 
+            position: absolute; top: 20px; left: 0; right: 0; 
+            padding: 0 20px; z-index: 100; 
+            display: flex; justify-content: space-between; 
         }
+        
+        .circle-btn { 
+            background: rgba(255,255,255,0.9); border: none; width: 42px; height: 42px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+        }
+
+        .fav-btn svg { fill: none; stroke: var(--primary); transition: 0.3s; }
+        .fav-btn.active svg { fill: var(--danger); stroke: var(--danger); }
 
         .content { 
             margin-top: -30px; background: var(--bg); border-radius: 30px 30px 0 0; 
@@ -50,7 +62,7 @@
         .progress-ring svg { transform: rotate(-90deg); width: 64px; height: 64px; }
         .progress-ring circle { fill: none; stroke-width: 6; cx: 32; cy: 32; r: 28; }
         .ring-bg { stroke: #f1f5f9; }
-        .ring-fill { stroke: var(--success); stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+        .ring-fill { stroke: var(--success); stroke-linecap: round; transition: 1s ease; }
         .percentage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
 
         #map { height: 200px; width: 100%; border-radius: 16px; margin-top: 12px; z-index: 2; border: 1px solid var(--border); }
@@ -73,11 +85,18 @@
     <div id="loader" class="loader">Yuklanmoqda...</div>
 
     <div id="mainUI" style="display: none;">
-        <div class="slider">
-            <button class="back-btn" onclick="history.back()">
+        <div class="top-actions">
+            <button class="circle-btn" onclick="history.back()">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
-            <img id="p-img" src="" alt="Mahsulot">
+            <button id="favBtn" class="circle-btn fav-btn" onclick="toggleFavourite()">
+                <svg width="22" height="22" viewBox="0 0 24 24" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
+        </div>
+
+        <div class="swiper">
+            <div class="swiper-wrapper" id="p-slider"></div>
+            <div class="swiper-pagination"></div>
         </div>
 
         <div class="content">
@@ -93,10 +112,7 @@
             <div class="card">
                 <div class="stats-flex">
                     <div class="progress-ring">
-                        <svg>
-                            <circle class="ring-bg"></circle>
-                            <circle id="ringFill" class="ring-fill" stroke-dasharray="175.9" stroke-dashoffset="175.9"></circle>
-                        </svg>
+                        <svg><circle class="ring-bg"></circle><circle id="ringFill" class="ring-fill" stroke-dasharray="175.9" stroke-dashoffset="175.9"></circle></svg>
                         <div class="percentage" id="p-percent">0%</div>
                     </div>
                     <div>
@@ -137,12 +153,12 @@
         const tg = window.Telegram.WebApp;
         const id = new URLSearchParams(window.location.search).get('id');
         const token = localStorage.getItem('token');
+        let isFav = false;
 
         const translate = {
             FIXED: "Aniq narx", NEGOTIABLE: "Kelishuv asosida",
             AVAILABLE: "Mavjud", REGIONAL: "Viloyat bo'ylab", NOT_AVAILABLE: "Mavjud emas",
-            ELECTRONICS: "Elektronika", CLOTHES: "Kiyim-kechak", TOYS: "O'yinchoqlar",
-            SPORT_INSTRUMENTS: "Sport anjomlari", BEAUTY: "Go'zallik", HOME: "Uy-ro'zg'or"
+            ELECTRONICS: "Elektronika", CLOTHES: "Kiyim-kechak", HOME: "Uy-ro'zg'or", BEAUTY: "Go'zallik"
         };
 
         async function init() {
@@ -152,7 +168,13 @@
                 });
                 const { data } = await res.json();
 
-                document.getElementById('p-img').src = data.medias[0];
+                const slider = document.getElementById('p-slider');
+                data.medias.forEach(url => {
+                    slider.innerHTML += `<div class="swiper-slide"><img src="${url}"></div>`;
+                });
+
+                new Swiper('.swiper', { pagination: { el: '.swiper-pagination' }, loop: data.medias.length > 1 });
+
                 document.getElementById('p-cat').innerText = translate[data.category] || data.category;
                 document.getElementById('p-name').innerText = data.name;
                 document.getElementById('p-price').innerText = Number(data.price).toLocaleString() + " so'm";
@@ -161,6 +183,9 @@
                 document.getElementById('p-region').innerText = data.locationResponse.region;
                 document.getElementById('p-delivery').innerText = translate[data.deliveryType] || data.deliveryType;
                 document.getElementById('p-chat').href = `https://t.me/${data.sellerContact.replace('@','')}`;
+
+                isFav = data.isFavourites;
+                if(isFav) document.getElementById('favBtn').classList.add('active');
 
                 const pr = data.recommendedPrecent || 0;
                 document.getElementById('p-percent').innerText = pr + "%";
@@ -172,24 +197,30 @@
                 const map = L.map('map', { zoomControl: false, dragging: !tg.isExpanded }).setView([data.locationResponse.lat, data.locationResponse.lng], 14);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
                 L.marker([data.locationResponse.lat, data.locationResponse.lng]).addTo(map);
-            } catch (e) {
-                tg.showAlert("Ma'lumotni yuklab bo'lmadi");
-            }
+            } catch (e) { tg.showAlert("Yuklashda xatolik"); }
+        }
+
+        async function toggleFavourite() {
+            try {
+                const res = await fetch(`https://api.loopa.buzz/api/favourite/add/${id}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) {
+                    isFav = !isFav;
+                    document.getElementById('favBtn').classList.toggle('active', isFav);
+                    tg.HapticFeedback.impactOccurred('medium');
+                }
+            } catch(e) { tg.showAlert("Xatolik yuz berdi"); }
         }
 
         function voteAction() {
-            tg.showConfirm("Ushbu mahsulotni boshqalarga tavsiya qilasizmi?", async (ok) => {
-                try {
-                    const res = await fetch(`https://api.loopa.buzz/api/votes?productId=${id}&recommended=${ok}`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if(res.ok) {
-                        tg.HapticFeedback.notificationOccurred('success');
-                        tg.showAlert("Ovozingiz qabul qilindi!");
-                        location.reload();
-                    }
-                } catch(err) { tg.showAlert("Xatolik yuz berdi"); }
+            tg.showConfirm("Ushbu mahsulotni tavsiya qilasizmi?", async (ok) => {
+                const res = await fetch(`https://api.loopa.buzz/api/votes?productId=${id}&recommended=${ok}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) { tg.HapticFeedback.notificationOccurred('success'); location.reload(); }
             });
         }
 
