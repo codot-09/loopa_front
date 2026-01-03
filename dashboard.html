@@ -7,219 +7,176 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --primary: #0f172a;
-            --accent: #3b82f6;
-            --bg: #f8fafc;
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8f9fa;
             --white: #ffffff;
             --text-muted: #64748b;
-            --border: rgba(0,0,0,0.06);
-            --hot: #ef4444;
-            --new: #22c55e;
-            --discount: #f59e0b;
-            --blur-bg: rgba(255,255,255,0.92);
+            --border: rgba(0,0,0,0.05);
+            --hot: #ff3b30;
+            --new: #34c759;
+            --discount: #ff9500;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body {
-            background: linear-gradient(135deg, #fdfbfb 0%, #f1f5f9 50%, #e0e7ff 100%);
-            font-family: -apple-system, system-ui, sans-serif;
-            color: var(--primary);
-            min-height: 100vh;
-            padding-bottom: 100px;
-            transition: filter 0.3s ease;
-        }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); min-height: 100vh; padding-bottom: 80px; }
 
         header {
             background: var(--white);
-            padding: 14px 20px 0;
+            padding: 8px 16px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 8px;
             position: sticky;
             top: 0;
             z-index: 100;
             border-bottom: 1px solid var(--border);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .logo { width: 28px; height: 28px; object-fit: contain; }
-        .brand-name { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.6px; }
+        .brand { display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .logo { width: 22px; height: 22px; object-fit: contain; }
+        .brand-name { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.4px; }
 
-        .search-container {
+        .search-bar {
+            background: #f1f3f5;
+            border-radius: 10px;
+            padding: 8px 12px;
             display: flex;
-            gap: 10px;
             align-items: center;
+            gap: 6px;
             position: relative;
         }
-        .search-bar {
-            flex: 1;
-            background: #f1f5f9;
-            border-radius: 18px;
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-        }
-        .search-bar.focused {
+        .search-bar input { border: none; background: transparent; width: 100%; font-size: 0.85rem; outline: none; color: var(--primary); }
+
+        .search-history {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
             background: var(--white);
-            box-shadow: 0 10px 30px rgba(59,130,246,0.25);
-            border: 2px solid var(--accent);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 4px;
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 101;
         }
-        .search-bar input {
-            border: none;
-            background: transparent;
-            width: 100%;
-            font-size: 1.05rem;
-            outline: none;
-            color: var(--primary);
-        }
-        .filter-btn {
-            width: 52px;
-            height: 52px;
-            background: #f1f5f9;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .search-history.active { display: flex; }
+        .history-item {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            border-radius: 8px;
+            transition: background 0.2s;
         }
-        .filter-btn:active { transform: scale(0.94); background: #e2e8f0; }
+        .history-item:hover { background: #f1f3f5; }
 
         .categories {
             display: flex;
-            gap: 16px;
-            padding: 16px 0 10px;
+            gap: 8px;
+            padding: 8px 0;
             overflow-x: auto;
             scrollbar-width: none;
         }
         .categories::-webkit-scrollbar { display: none; }
         .category-item {
             flex-shrink: 0;
-            width: 82px;
+            width: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
-            padding: 14px 10px;
-            border-radius: 24px;
+            gap: 4px;
+            padding: 6px;
+            border-radius: 12px;
             background: transparent;
-            transition: all 0.4s ease;
+            transition: background 0.2s;
             cursor: pointer;
         }
-        .category-item.active {
-            background: rgba(59,130,246,0.15);
-            transform: translateY(-6px);
-            box-shadow: 0 8px 25px rgba(59,130,246,0.2);
-        }
+        .category-item.active { background: rgba(58,134,255,0.1); }
         .category-icon {
-            width: 62px;
-            height: 62px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #f1f3f5;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 6px 16px rgba(59,130,246,0.18);
-            transition: all 0.4s ease;
-        }
-        .category-item.active .category-icon {
-            background: var(--accent);
-            color: white;
-            transform: scale(1.15);
+            font-size: 20px;
         }
         .category-label {
-            font-size: 0.85rem;
+            font-size: 0.65rem;
             font-weight: 600;
             color: var(--text-muted);
-            transition: all 0.3s;
         }
-        .category-item.active .category-label {
-            color: var(--accent);
-            font-weight: 700;
-        }
+        .category-item.active .category-label { color: var(--accent); }
 
-        .container { padding: 16px; transition: filter 0.3s ease; }
+        .container { padding: 8px; }
 
         .products-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            gap: 8px;
         }
 
         .product-card {
             background: var(--white);
-            border-radius: 24px;
+            border-radius: 14px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.4s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            transition: all 0.2s ease;
             position: relative;
         }
-        .product-card:active {
-            transform: translateY(6px);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-        }
+        .product-card:active { transform: translateY(2px); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
 
         .product-cover-wrapper {
             position: relative;
             width: 100%;
             aspect-ratio: 1/1;
             overflow: hidden;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         }
         .product-cover {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.4s ease;
         }
-        .product-card:active .product-cover {
-            transform: scale(1.1);
-        }
+        .product-card:active .product-cover { transform: scale(1.05); }
 
         .badge {
             position: absolute;
-            top: 14px;
-            left: 14px;
-            padding: 6px 14px;
-            border-radius: 16px;
-            font-size: 0.78rem;
+            top: 6px;
+            left: 6px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
             font-weight: 800;
             color: white;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.4px;
             z-index: 2;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
         }
         .badge-hot { background: var(--hot); }
         .badge-new { background: var(--new); }
         .badge-sale { background: var(--discount); }
 
         .product-info {
-            padding: 18px 18px 20px;
+            padding: 10px 12px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 4px;
         }
 
         .product-name {
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 700;
-            line-height: 1.4;
-            height: 2.8em;
+            line-height: 1.3;
+            height: 2.6em;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -228,14 +185,13 @@
         }
 
         .product-price {
-            font-size: 1.2rem;
-            font-weight: 900;
+            font-size: 0.95rem;
+            font-weight: 800;
             color: var(--accent);
-            letter-spacing: -0.6px;
         }
 
         .product-status {
-            font-size: 0.85rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-muted);
         }
@@ -245,170 +201,50 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding-top: 80px;
+            padding-top: 40px;
             text-align: center;
         }
-        .empty-container img { width: 180px; height: 180px; margin-bottom: 20px; opacity: 0.9; }
-        .empty-container h3 { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
-        .empty-container p { font-size: 0.95rem; color: var(--text-muted); max-width: 260px; line-height: 1.5; }
-
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(14px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: var(--blur-bg);
-            backdrop-filter: blur(24px);
-            width: 100%;
-            max-width: 440px;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-            animation: modalShow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        @keyframes modalShow {
-            from { opacity: 0; transform: scale(0.92); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .modal-header {
-            padding: 24px 28px;
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: 700;
-            border-bottom: 1px solid var(--border);
-            position: relative;
-        }
-        .modal-close {
-            position: absolute;
-            right: 24px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 2rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.08);
-            transition: background 0.2s;
-        }
-        .modal-close:active { background: rgba(0,0,0,0.15); }
-
-        .filter-section {
-            padding: 28px;
-        }
-        .filter-group {
-            margin-bottom: 32px;
-        }
-        .filter-label {
-            font-size: 1.05rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            display: block;
-            color: var(--primary);
-        }
-        .price-inputs {
-            display: flex;
-            gap: 18px;
-            align-items: center;
-        }
-        .price-inputs input {
-            flex: 1;
-            padding: 16px 18px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 18px;
-            font-size: 1.15rem;
-            background: var(--white);
-            transition: border 0.3s;
-        }
-        .price-inputs input:focus {
-            border-color: var(--accent);
-            outline: none;
-        }
-        .apply-btn {
-            width: 100%;
-            padding: 18px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 18px;
-            font-size: 1.15rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 12px;
-            box-shadow: 0 6px 20px rgba(59,130,246,0.35);
-            transition: all 0.3s;
-        }
-        .apply-btn:active { transform: translateY(2px); box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+        .empty-container img { width: 120px; height: 120px; margin-bottom: 12px; opacity: 0.9; }
+        .empty-container h3 { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+        .empty-container p { font-size: 0.8rem; color: var(--text-muted); max-width: 200px; line-height: 1.4; }
 
         .nav {
             position: fixed;
-            bottom: 24px; left: 20px; right: 20px;
-            height: 68px;
-            background: rgba(15,23,42,0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
+            bottom: 16px; left: 16px; right: 16px;
+            height: 56px;
+            background: rgba(1, 22, 39, 0.98);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             z-index: 1000;
-            transition: filter 0.3s ease;
         }
-        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.6); text-decoration: none; flex: 1; transition: color 0.3s; }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 2px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; }
         .nav-link.active { color: var(--white); }
-        .nav-link svg { width: 24px; height: 24px; }
-        .nav-label { font-size: 0.7rem; font-weight: 600; }
+        .nav-link svg { width: 18px; height: 18px; }
+        .nav-label { font-size: 0.6rem; font-weight: 600; }
 
-        #shimmer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-        .skeleton { background: #e2e8f0; border-radius: 24px; height: 280px; animation: pulse 1.6s infinite; }
+        #shimmer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .skeleton { background: #eee; border-radius: 14px; height: 200px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-
-        .blur-active { filter: blur(10px); pointer-events: none; }
-        .search-focused .search-bar {
-            position: fixed;
-            top: 50%;
-            left: 20px;
-            right: 20px;
-            transform: translateY(-50%);
-            z-index: 1001;
-            border-radius: 24px;
-            padding: 18px 20px;
-            box-shadow: 0 20px 50px rgba(59,130,246,0.4);
-        }
-        .search-focused .search-container > *:not(.search-bar) { opacity: 0; }
     </style>
 </head>
 <body>
 
-    <header id="header">
+    <header>
         <div class="brand">
             <img src="/assets/logo.png" alt="L" class="logo">
             <span class="brand-name">Loopa</span>
         </div>
-        <div class="search-container">
-            <div class="search-bar" id="searchBar">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="searchInput" placeholder="Mahsulot qidiring...">
-            </div>
-            <div class="filter-btn" id="filterBtn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-            </div>
+        <div class="search-bar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchInput" placeholder="Qidirish...">
+            <div class="search-history" id="searchHistory"></div>
         </div>
-        <div class="categories" id="categories">
+        <div class="categories">
             <div class="category-item active" data-category="">
-                <div class="category-icon">✨</div>
+                <div class="category-icon">🌟</div>
                 <div class="category-label">Barchasi</div>
             </div>
             <div class="category-item" data-category="ELECTRONICS">
@@ -421,7 +257,7 @@
             </div>
             <div class="category-item" data-category="TOYS">
                 <div class="category-icon">🧸</div>
-                <div class="category-label">O'yinchoqlar</div>
+                <div class="category-label">O'yinchoq</div>
             </div>
             <div class="category-item" data-category="SPORT_INSTRUMENTS">
                 <div class="category-icon">⚽</div>
@@ -438,7 +274,7 @@
         </div>
     </header>
 
-    <div class="container" id="mainContainer">
+    <div class="container">
         <div id="shimmer">
             <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
         </div>
@@ -448,31 +284,11 @@
         <div id="emptyState" class="empty-container">
             <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="Bo'sh">
             <h3>Hech narsa topilmadi</h3>
-            <p>Iltimos, boshqa so'z bilan qidirib ko'ring</p>
+            <p>Siz qidirayotgan mahsulotlar hozircha mavjud emas</p>
         </div>
     </div>
 
-    <div class="modal" id="filterModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                Filterlar
-                <div class="modal-close" id="closeModal">×</div>
-            </div>
-            <div class="filter-section">
-                <div class="filter-group">
-                    <label class="filter-label">Narx oralig'i</label>
-                    <div class="price-inputs">
-                        <input type="number" id="minPrice" placeholder="Min narx">
-                        <span>—</span>
-                        <input type="number" id="maxPrice" placeholder="Max narx">
-                    </div>
-                </div>
-                <button class="apply-btn" id="applyFilter">Natijalarni ko'rsatish</button>
-            </div>
-        </div>
-    </div>
-
-    <nav class="nav" id="bottomNav">
+    <nav class="nav">
         <a href="dashboard.html" class="nav-link active">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span class="nav-label">Asosiy</span>
@@ -494,25 +310,12 @@
         
         let currentQuery = '';
         let currentCategory = '';
-        let currentMinPrice = '';
-        let currentMaxPrice = '';
 
         const productsGrid = document.getElementById('productsGrid');
         const shimmer = document.getElementById('shimmer');
         const empty = document.getElementById('emptyState');
         const searchInput = document.getElementById('searchInput');
-        const searchBar = document.getElementById('searchBar');
-        const searchContainer = document.querySelector('.search-container');
-        const filterBtn = document.getElementById('filterBtn');
-        const filterModal = document.getElementById('filterModal');
-        const closeModal = document.getElementById('closeModal');
-        const minPriceInput = document.getElementById('minPrice');
-        const maxPriceInput = document.getElementById('maxPrice');
-        const applyFilter = document.getElementById('applyFilter');
-        const header = document.getElementById('header');
-        const mainContainer = document.getElementById('mainContainer');
-        const bottomNav = document.getElementById('bottomNav');
-        const body = document.body;
+        const searchHistory = document.getElementById('searchHistory');
 
         function openProduct(id) {
             tg.HapticFeedback.impactOccurred('light');
@@ -547,8 +350,6 @@
             let url = `${API_BASE}/api/products/search?page=0&size=20`;
             if (currentQuery) url += `&query=${encodeURIComponent(currentQuery)}`;
             if (currentCategory) url += `&category=${currentCategory}`;
-            if (currentMinPrice) url += `&minprice=${currentMinPrice}`;
-            if (currentMaxPrice) url += `&maxprice=${currentMaxPrice}`;
 
             try {
                 const response = await fetch(url, {
@@ -584,6 +385,25 @@
             }
         }
 
+        function updateSearchHistory() {
+            let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            searchHistory.innerHTML = '';
+            history.slice(-3).forEach(term => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.textContent = term;
+                div.onclick = () => {
+                    searchInput.value = term;
+                    currentQuery = term;
+                    loadProducts();
+                    searchHistory.classList.remove('active');
+                };
+                searchHistory.appendChild(div);
+            });
+            if (history.length > 0) searchHistory.classList.add('active');
+            else searchHistory.classList.remove('active');
+        }
+
         document.querySelectorAll('.category-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
@@ -593,42 +413,22 @@
             });
         });
 
-        searchInput.addEventListener('focus', () => {
-            searchBar.classList.add('focused');
-            body.classList.add('search-focused');
-            header.classList.add('blur-active');
-            mainContainer.classList.add('blur-active');
-            bottomNav.classList.add('blur-active');
-        });
-
-        searchInput.addEventListener('blur', () => {
-            if (!searchInput.value.trim()) {
-                searchBar.classList.remove('focused');
-                body.classList.remove('search-focused');
-                header.classList.remove('blur-active');
-                mainContainer.classList.remove('blur-active');
-                bottomNav.classList.remove('blur-active');
-            }
-        });
+        searchInput.addEventListener('focus', updateSearchHistory);
 
         searchInput.addEventListener('input', (e) => {
             currentQuery = e.target.value.trim();
-            loadProducts();
+            if (currentQuery) searchHistory.classList.remove('active');
+            else updateSearchHistory();
         });
 
-        filterBtn.addEventListener('click', () => {
-            filterModal.classList.add('active');
-        });
-
-        closeModal.addEventListener('click', () => {
-            filterModal.classList.remove('active');
-        });
-
-        applyFilter.addEventListener('click', () => {
-            currentMinPrice = minPriceInput.value || '';
-            currentMaxPrice = maxPriceInput.value || '';
-            filterModal.classList.remove('active');
-            loadProducts();
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && currentQuery) {
+                let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+                history.push(currentQuery);
+                localStorage.setItem('searchHistory', JSON.stringify(history));
+                loadProducts();
+                searchHistory.classList.remove('active');
+            }
         });
 
         document.querySelectorAll('.nav-link').forEach(link => {
