@@ -29,7 +29,7 @@
         
         .media-counter {
             position: absolute; bottom: 45px; right: 20px; z-index: 10;
-            background: rgba(0,0,0,0.5); color: white; padding: 4px 12px;
+            background: rgba(0,0,0,0.6); color: white; padding: 4px 12px;
             border-radius: 20px; font-size: 0.75rem; font-weight: 600; backdrop-filter: blur(4px);
         }
 
@@ -164,8 +164,7 @@
         const translate = {
             FIXED: "Aniq narx", NEGOTIABLE: "Kelishuv asosida",
             AVAILABLE: "Mavjud", REGIONAL: "Viloyat bo'ylab", NOT_AVAILABLE: "Mavjud emas",
-            ELECTRONICS: "Elektronika", CLOTHES: "Kiyim-kechak", HOME: "Uy-ro'zg'or", BEAUTY: "Go'zallik",
-            SPORT: "Sport", TOYS: "O'yinchoqlar", OTHER: "Boshqa"
+            ELECTRONICS: "Elektronika", CLOTHES: "Kiyim-kechak", HOME: "Uy-ro'zg'or", BEAUTY: "Go'zallik"
         };
 
         async function init() {
@@ -206,9 +205,7 @@
                 document.getElementById('p-delivery').innerText = translate[data.deliveryType] || data.deliveryType;
                 document.getElementById('p-chat').href = `https://t.me/${data.sellerContact.replace('@','')}`;
 
-                if(data.isFavourites) {
-                    document.getElementById('favBtn').classList.add('active');
-                }
+                if(data.isFavourites) document.getElementById('favBtn').classList.add('active');
 
                 const pr = data.recommendedPrecent || 0;
                 document.getElementById('p-percent').innerText = pr + "%";
@@ -225,7 +222,7 @@
 
         async function addFavourite() {
             try {
-                const res = await fetch(`https://api.loopa.buzz/api/favourite/add?productId=${productId}`, {
+                const res = await fetch(`https://api.loopa.buzz/api/favourite/${productId}`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -242,7 +239,10 @@
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if(res.ok) { tg.HapticFeedback.notificationOccurred('success'); location.reload(); }
+                if(res.ok) { 
+                    tg.HapticFeedback.notificationOccurred('success'); 
+                    location.reload(); 
+                }
             });
         }
 
