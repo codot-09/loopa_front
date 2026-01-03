@@ -200,18 +200,23 @@
             } catch (e) { tg.showAlert("Yuklashda xatolik"); }
         }
 
-        async function toggleFavourite() {
+        async function addFavourite() {
             try {
-                const res = await fetch(`https://api.loopa.buzz/api/favourite/add/${id}`, {
+                const res = await fetch(`https://api.loopa.buzz/api/favourite/add?productId=${productId}`, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
+                
                 if(res.ok) {
-                    isFav = !isFav;
-                    document.getElementById('favBtn').classList.toggle('active', isFav);
-                    tg.HapticFeedback.impactOccurred('medium');
+                    document.getElementById('favBtn').classList.add('active');
+                    tg.HapticFeedback.notificationOccurred('success');
                 }
-            } catch(e) { tg.showAlert("Xatolik yuz berdi"); }
+            } catch(e) { 
+                tg.showAlert("Xatolik yuz berdi"); 
+            }
         }
 
         function voteAction() {
