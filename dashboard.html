@@ -59,8 +59,9 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            transition: transform 0.1s;
         }
-        .product-card:active { transform: scale(0.98); }
+        .product-card:active { transform: scale(0.96); }
         .product-cover { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #f0f0f0; }
         .product-info { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
         .product-name { font-size: 0.85rem; font-weight: 600; line-height: 1.4; height: 2.8em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
@@ -145,6 +146,11 @@
     <script>
         const tg = window.Telegram.WebApp;
         
+        function openProduct(id) {
+            tg.HapticFeedback.impactOccurred('light');
+            window.location.href = `product.html?id=${id}`;
+        }
+
         async function load() {
             const token = localStorage.getItem('token');
             const grid = document.getElementById('productsGrid');
@@ -160,7 +166,7 @@
 
                 if (res.success && res.data?.content && res.data.content.length > 0) {
                     grid.innerHTML = res.data.content.map(p => `
-                        <div class="product-card" onclick="tg.HapticFeedback.impactOccurred('light')">
+                        <div class="product-card" onclick="openProduct('${p.id}')">
                             <img src="${p.cover}" class="product-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/300?text=Loopa'">
                             <div class="product-info">
                                 <h3 class="product-name">${p.name}</h3>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mahsulot</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #2ec4b6;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); padding-bottom: 40px; }
+
+        .slider { position: relative; width: 100%; height: 350px; background: #eee; overflow: hidden; }
+        .slider img { width: 100%; height: 100%; object-fit: cover; }
+        .back-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+
+        .content { margin-top: -25px; background: var(--bg); border-radius: 25px 25px 0 0; position: relative; padding: 24px 20px; display: flex; flex-direction: column; gap: 20px; }
+
+        .header-info { display: flex; flex-direction: column; gap: 8px; }
+        .category-badge { color: var(--accent); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .product-title { font-size: 1.5rem; font-weight: 800; line-height: 1.2; }
+        .price-row { display: flex; align-items: baseline; gap: 10px; }
+        .price { font-size: 1.4rem; font-weight: 900; color: var(--accent); }
+        .price-type { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+
+        .card { background: var(--white); padding: 16px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid var(--border); }
+        .section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+        .desc-text { font-size: 0.95rem; line-height: 1.6; color: #475569; }
+
+        .stats-container { display: flex; align-items: center; gap: 20px; }
+        .chart-box { position: relative; width: 70px; height: 70px; }
+        .chart-box svg { transform: rotate(-90deg); }
+        .chart-box circle { fill: none; stroke-width: 6; stroke-linecap: round; }
+        .chart-bg { stroke: #edf2f7; }
+        .chart-fill { stroke: var(--success); transition: stroke-dashoffset 1s ease-out; }
+        .chart-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 800; font-size: 0.9rem; }
+
+        #map { height: 180px; width: 100%; border-radius: 15px; margin-top: 10px; z-index: 1; }
+
+        .footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; position: sticky; bottom: 20px; padding: 0 20px; }
+        .btn { border: none; padding: 16px; border-radius: 18px; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-vote { background: var(--white); color: var(--primary); border: 2px solid var(--primary); }
+        .btn-contact { background: var(--primary); color: var(--white); text-decoration: none; }
+        .btn:active { transform: scale(0.96); }
+
+        .loading-screen { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <div id="loader" class="loading-screen">
+        <span style="font-weight: 700;">Yuklanmoqda...</span>
+    </div>
+
+    <div id="mainContent" style="display: none;">
+        <div class="slider">
+            <button class="back-btn" onclick="history.back()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <img id="productImg" src="" alt="">
+        </div>
+
+        <div class="content">
+            <div class="header-info">
+                <span class="category-badge" id="category"></span>
+                <h1 class="product-title" id="title"></h1>
+                <div class="price-row">
+                    <span class="price" id="price"></span>
+                    <span class="price-type" id="priceType"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="stats-container">
+                    <div class="chart-box">
+                        <svg width="70" height="70">
+                            <circle class="chart-bg" cx="35" cy="35" r="30"></circle>
+                            <circle id="chartFill" class="chart-fill" cx="35" cy="35" r="30" stroke-dasharray="188.4" stroke-dashoffset="188.4"></circle>
+                        </svg>
+                        <div class="chart-text" id="percentText">0%</div>
+                    </div>
+                    <div>
+                        <p style="font-weight: 700; font-size: 0.9rem;">Tavsiya darajasi</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Xaridorlar fikri asosida</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title">Tavsif</h3>
+                <p class="desc-text" id="desc"></p>
+            </div>
+
+            <div class="card">
+                <h3 class="section-title">Manzil va Yetkazib berish</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 5px;">📍 <span id="region"></span></p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">🚚 <span id="delivery"></span></p>
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div class="footer-actions">
+            <button class="btn btn-vote" onclick="showVoteModal()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                Ovoz berish
+            </button>
+            <a id="contactBtn" href="" class="btn btn-contact">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-13.6 8.5 8.5 0 0 1 4.6 1.3L22 3l-1.5 5.5z"></path></svg>
+                Bog'lanish
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        const token = localStorage.getItem('token');
+        let map;
+
+        async function loadProduct() {
+            try {
+                const res = await fetch(`https://api.loopa.buzz/api/products/${productId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const { data } = await res.json();
+
+                document.getElementById('productImg').src = data.medias[0];
+                document.getElementById('category').innerText = data.category;
+                document.getElementById('title').innerText = data.name;
+                document.getElementById('price').innerText = Number(data.price).toLocaleString() + " so'm";
+                document.getElementById('priceType').innerText = data.priceType === 'FIXED' ? '(Aniq narx)' : '(Kelishiladi)';
+                document.getElementById('desc').innerText = data.description;
+                document.getElementById('region').innerText = data.locationResponse.region;
+                document.getElementById('delivery').innerText = "Yetkazib berish: " + data.deliveryType;
+                document.getElementById('contactBtn').href = `https://t.me/${data.sellerContact.replace('@','')}`;
+
+                // Chart animation
+                const percent = data.recommendedPrecent || 0;
+                const circle = document.getElementById('chartFill');
+                const offset = 188.4 - (188.4 * percent / 100);
+                circle.style.strokeDashoffset = offset;
+                document.getElementById('percentText').innerText = percent + "%";
+
+                // Map
+                initMap(data.locationResponse.lat, data.locationResponse.lng);
+
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } catch (e) {
+                tg.showAlert("Xatolik yuz berdi");
+            }
+        }
+
+        function initMap(lat, lng) {
+            map = L.map('map', { zoomControl: false }).setView([lat, lng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            L.marker([lat, lng]).addTo(map);
+        }
+
+        function showVoteModal() {
+            tg.showConfirm("Ushbu mahsulotni tavsiya qilasizmi?", (ok) => {
+                sendVote(ok);
+            });
+        }
+
+        async function sendVote(isRecommended) {
+            try {
+                const res = await fetch(`https://api.loopa.buzz/api/votes?productId=${productId}&recommended=${isRecommended}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert("Ovozingiz qabul qilindi!");
+                    loadProduct(); 
+                }
+            } catch (e) {
+                tg.showAlert("Ovoz berishda xatolik");
+            }
+        }
+
+        tg.ready();
+        tg.expand();
+        loadProduct();
+    </script>
+</body>
+</html>

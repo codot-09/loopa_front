@@ -58,7 +58,9 @@
             gap: 14px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.02);
             border: 1px solid var(--border);
+            transition: transform 0.1s;
         }
+        .item-card:active { transform: scale(0.97); }
 
         .item-img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; background: #f1f5f9; }
         
@@ -138,6 +140,11 @@
         tg.ready();
         tg.expand();
 
+        function openProduct(id) {
+            tg.HapticFeedback.impactOccurred('light');
+            window.location.href = `product.html?id=${id}`;
+        }
+
         async function fetchProducts() {
             const token = localStorage.getItem('token');
             const listEl = document.getElementById('productList');
@@ -156,7 +163,7 @@
 
                 if (result.success && result.data && result.data.length > 0) {
                     listEl.innerHTML = result.data.map(p => `
-                        <div class="item-card" onclick="tg.HapticFeedback.impactOccurred('light')">
+                        <div class="item-card" onclick="openProduct('${p.id}')">
                             <img src="${p.cover}" class="item-img" onerror="this.src='https://via.placeholder.com/150'">
                             <div class="item-details">
                                 <h3 class="item-name">${p.name}</h3>
