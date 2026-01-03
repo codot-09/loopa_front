@@ -13,6 +13,7 @@
             --white: #ffffff;
             --text-muted: #64748b;
             --border: rgba(0,0,0,0.05);
+            --danger: #ef4444;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -46,28 +47,32 @@
         }
 
         .container { padding: 16px; }
-
         .product-list { display: flex; flex-direction: column; gap: 12px; }
 
         .item-card {
             background: var(--white);
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 12px;
             display: flex;
             align-items: center;
-            gap: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            gap: 12px;
             border: 1px solid var(--border);
-            transition: transform 0.1s;
+            position: relative;
         }
-        .item-card:active { transform: scale(0.97); }
 
-        .item-img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; background: #f1f5f9; }
-        
-        .item-details { flex: 1; }
-        .item-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        .item-price { font-size: 0.95rem; font-weight: 800; color: var(--accent); }
-        .item-stats { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+        .item-img { width: 75px; height: 75px; border-radius: 14px; object-fit: cover; background: #f1f5f9; }
+        .item-details { flex: 1; min-width: 0; }
+        .item-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-price { font-size: 1rem; font-weight: 800; color: var(--accent); }
+        .item-stats { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
+
+        .actions { display: flex; flex-direction: column; gap: 8px; }
+        .action-btn { 
+            background: #f1f5f9; border: none; width: 36px; height: 36px; 
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted);
+        }
+        .btn-delete { color: var(--danger); background: #fee2e2; }
 
         .empty-state {
             display: none;
@@ -77,7 +82,7 @@
             padding-top: 100px;
             text-align: center;
         }
-        .empty-state img { width: 120px; opacity: 0.5; margin-bottom: 15px; }
+        .empty-state img { width: 140px; margin-bottom: 15px; }
 
         .nav {
             position: fixed;
@@ -97,16 +102,16 @@
         .nav-label { font-size: 0.65rem; font-weight: 600; }
 
         #loading { display: flex; justify-content: center; padding: 40px; }
-        .spinner { width: 24px; height: 24px; border: 3px solid rgba(58, 134, 255, 0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner { width: 28px; height: 28px; border: 3px solid rgba(58, 134, 255, 0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <header>
-        <span class="header-title">Mahsulotlarim</span>
+        <span class="header-title">Mening mahsulotlarim</span>
         <button class="add-btn" onclick="addNew()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             Qo'shish
         </button>
     </header>
@@ -116,7 +121,7 @@
         <div id="productList" class="product-list"></div>
         <div id="emptyState" class="empty-state">
             <img src="https://cdn-icons-png.flaticon.com/512/4076/4076432.png">
-            <p style="color: var(--text-muted); font-weight: 600;">Mahsulotlar mavjud emas</p>
+            <p style="color: var(--text-muted); font-weight: 600;">Sizda mahsulotlar yo'q</p>
         </div>
     </div>
 
@@ -140,37 +145,37 @@
         tg.ready();
         tg.expand();
 
-        function openProduct(id) {
-            tg.HapticFeedback.impactOccurred('light');
-            window.location.href = `product.html?id=${id}`;
-        }
+        const token = localStorage.getItem('token');
 
         async function fetchProducts() {
-            const token = localStorage.getItem('token');
             const listEl = document.getElementById('productList');
             const emptyEl = document.getElementById('emptyState');
             const loadingEl = document.getElementById('loading');
 
             try {
                 const res = await fetch('https://api.loopa.buzz/api/products/my-products', {
-                    headers: { 
-                        'accept': '*/*',
-                        'Authorization': `Bearer ${token}` 
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const result = await res.json();
                 loadingEl.style.display = 'none';
 
                 if (result.success && result.data && result.data.length > 0) {
                     listEl.innerHTML = result.data.map(p => `
-                        <div class="item-card" onclick="openProduct('${p.id}')">
-                            <img src="${p.cover}" class="item-img" onerror="this.src='https://via.placeholder.com/150'">
-                            <div class="item-details">
+                        <div class="item-card" id="prod-${p.id}">
+                            <img src="${p.cover}" class="item-img" onclick="openDetails('${p.id}')" onerror="this.src='https://via.placeholder.com/150'">
+                            <div class="item-details" onclick="openDetails('${p.id}')">
                                 <h3 class="item-name">${p.name}</h3>
                                 <p class="item-price">${Number(p.price).toLocaleString()} so'm</p>
                                 <p class="item-stats">⭐ ${p.recommendedCount} tavsiya</p>
                             </div>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <div class="actions">
+                                <button class="action-btn btn-delete" onclick="confirmDelete('${p.id}', '${p.name.replace(/'/g, "\\'")}')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                                <button class="action-btn" onclick="openDetails('${p.id}')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
                         </div>
                     `).join('');
                 } else {
@@ -182,14 +187,41 @@
             }
         }
 
+        function confirmDelete(id, name) {
+            tg.HapticFeedback.impactOccurred('warning');
+            tg.showConfirm(`"${name}" mahsulotini o'chirmoqchimisiz?`, (ok) => {
+                if(ok) deleteProduct(id);
+            });
+        }
+
+        async function deleteProduct(id) {
+            try {
+                const res = await fetch(`https://api.loopa.buzz/api/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                if(result.success) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    document.getElementById(`prod-${id}`).remove();
+                    if(document.getElementById('productList').children.length === 0) {
+                        document.getElementById('emptyState').style.display = 'flex';
+                    }
+                }
+            } catch (err) {
+                tg.showAlert("O'chirishda xatolik yuz berdi");
+            }
+        }
+
+        function openDetails(id) {
+            tg.HapticFeedback.impactOccurred('light');
+            window.location.href = `product.html?id=${id}`;
+        }
+
         function addNew() {
             tg.HapticFeedback.impactOccurred('medium');
             window.location.href = 'add-product.html';
         }
-
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => tg.HapticFeedback.impactOccurred('medium'));
-        });
 
         fetchProducts();
     </script>
