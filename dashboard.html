@@ -62,13 +62,12 @@
 
         .categories { display: flex; gap: 12px; overflow-x: auto; padding: 5px 0; scrollbar-width: none; }
         .categories::-webkit-scrollbar { display: none; }
-        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 65px; }
+        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 65px; cursor: pointer; }
         .cat-icon-wrap {
             width: 55px; height: 55px; border-radius: 16px;
             background: var(--white); border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; transition: 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
         .category-item.active .cat-icon-wrap { background: var(--accent); transform: scale(1.05); box-shadow: 0 8px 15px rgba(58,134,255,0.2); border-color: var(--accent); }
         .category-item.active .cat-label { color: var(--accent); font-weight: 700; }
@@ -93,7 +92,7 @@
             position: absolute; top: 10px; left: 10px;
             padding: 4px 8px; border-radius: 8px; font-size: 0.6rem;
             font-weight: 800; color: white; text-transform: uppercase;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 2;
+            z-index: 2;
         }
 
         .fav-btn {
@@ -110,10 +109,10 @@
             display: flex; align-items: center; gap: 4px;
             background: var(--timer-bg); color: var(--timer-text);
             padding: 4px 8px; border-radius: 8px; font-size: 0.65rem; font-weight: 700;
-            width: fit-content; margin: 2px 0;
+            width: fit-content;
         }
         .hook-icon { font-size: 0.75rem; animation: pulse-icon 1.5s infinite; }
-        @keyframes pulse-icon { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        @keyframes pulse-icon { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         .price-box {
             background: #f8fafc; padding: 8px 10px; border-radius: 12px;
@@ -122,10 +121,7 @@
         }
         .product-price { font-size: 0.95rem; font-weight: 800; color: var(--accent); }
 
-        .not-found {
-            display: none; flex-direction: column; align-items: center;
-            justify-content: center; padding: 50px 20px; text-align: center;
-        }
+        .not-found { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; text-align: center; }
         .not-found img { width: 180px; margin-bottom: 20px; }
 
         .nav {
@@ -186,9 +182,7 @@
         <div id="shimmer" class="products-grid">
             <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
         </div>
-        
         <div class="products-grid" id="productsGrid"></div>
-
         <div class="not-found" id="notFound">
             <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="Empty">
             <h3>Hech narsa topilmadi</h3>
@@ -237,13 +231,15 @@
             historyDiv.classList.add('active');
         }
 
-        function setSearch(v) {
-            input.value = v; query = v; historyDiv.classList.remove('active'); load();
-        }
+        function setSearch(v) { input.value = v; query = v; historyDiv.classList.remove('active'); load(); }
 
         async function load() {
             shim.style.display = 'grid'; grid.innerHTML = ''; notFound.style.display = 'none';
-            let url = `${API_BASE}/api/products/search?page=0&size=20&query=${encodeURIComponent(query)}&category=${category}`;
+            const isDefault = !query && !category;
+            const url = isDefault 
+                ? `${API_BASE}/api/products/for-user` 
+                : `${API_BASE}/api/products/search?page=0&size=20&query=${encodeURIComponent(query)}&category=${category}`;
+            
             try {
                 const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
                 const json = await res.json();
@@ -252,14 +248,7 @@
                     grid.innerHTML = json.data.content.map((p, i) => {
                         const tags = [['var(--hot)', 'HOT'], ['var(--new)', 'NEW'], ['var(--sale)', 'SALE']];
                         const t = tags[i % 3];
-                        
-                        const hooks = [
-                            '<span class="hook-icon">⏱</span> 02:45:12 qoldi',
-                            '<span class="hook-icon">🔥</span> Tez sotilmoqda',
-                            '<span class="hook-icon">🏷</span> -25% Chegirma'
-                        ];
-                        const hook = hooks[i % 3];
-
+                        const hooks = ['<span class="hook-icon">⏱</span> 02:45:12 qoldi', '<span class="hook-icon">🔥</span> Tez sotilmoqda', '<span class="hook-icon">🏷</span> -25% Chegirma'];
                         return `
                         <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
                             <div class="image-box">
@@ -269,10 +258,8 @@
                             </div>
                             <div class="product-info">
                                 <h3 class="product-name">${p.name}</h3>
-                                <div class="hook-container">${hook}</div>
-                                <div class="price-box">
-                                    <span class="product-price">${Number(p.price).toLocaleString()} so'm</span>
-                                </div>
+                                <div class="hook-container">${hooks[i % 3]}</div>
+                                <div class="price-box"><span class="product-price">${Number(p.price).toLocaleString()} so'm</span></div>
                             </div>
                         </div>`;
                     }).join('');
