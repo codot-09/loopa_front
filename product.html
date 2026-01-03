@@ -24,9 +24,14 @@
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); padding-bottom: 110px; }
 
-        .swiper { width: 100%; height: 380px; background: #eee; }
+        .swiper { width: 100%; height: 380px; background: #eee; position: relative; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
-        .swiper-pagination-bullet-active { background: var(--white) !important; }
+        
+        .media-counter {
+            position: absolute; bottom: 45px; right: 20px; z-index: 10;
+            background: rgba(0,0,0,0.5); color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 600; backdrop-filter: blur(4px);
+        }
 
         .top-actions { 
             position: absolute; top: 20px; left: 0; right: 0; 
@@ -41,6 +46,7 @@
         }
 
         .fav-btn svg { fill: none; stroke: var(--primary); transition: 0.3s; }
+        .fav-btn.active { pointer-events: none; }
         .fav-btn.active svg { fill: var(--danger); stroke: var(--danger); }
 
         .content { 
@@ -89,13 +95,14 @@
             <button class="circle-btn" onclick="history.back()">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
-            <button id="favBtn" class="circle-btn fav-btn" onclick="toggleFavourite()">
+            <button id="favBtn" class="circle-btn fav-btn" onclick="addFavourite()">
                 <svg width="22" height="22" viewBox="0 0 24 24" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
             </button>
         </div>
 
         <div class="swiper">
             <div class="swiper-wrapper" id="p-slider"></div>
+            <div class="media-counter" id="m-counter" style="display:none">1/1</div>
             <div class="swiper-pagination"></div>
         </div>
 
@@ -151,19 +158,19 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        const id = new URLSearchParams(window.location.search).get('id');
+        const productId = new URLSearchParams(window.location.search).get('id');
         const token = localStorage.getItem('token');
-        let isFav = false;
 
         const translate = {
             FIXED: "Aniq narx", NEGOTIABLE: "Kelishuv asosida",
             AVAILABLE: "Mavjud", REGIONAL: "Viloyat bo'ylab", NOT_AVAILABLE: "Mavjud emas",
-            ELECTRONICS: "Elektronika", CLOTHES: "Kiyim-kechak", HOME: "Uy-ro'zg'or", BEAUTY: "Go'zallik"
+            ELECTRONICS: "Elektronika", CLOTHES: "Kiyim-kechak", HOME: "Uy-ro'zg'or", BEAUTY: "Go'zallik",
+            SPORT: "Sport", TOYS: "O'yinchoqlar", OTHER: "Boshqa"
         };
 
         async function init() {
             try {
-                const res = await fetch(`https://api.loopa.buzz/api/products/${id}`, {
+                const res = await fetch(`https://api.loopa.buzz/api/products/${productId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const { data } = await res.json();
@@ -173,7 +180,22 @@
                     slider.innerHTML += `<div class="swiper-slide"><img src="${url}"></div>`;
                 });
 
-                new Swiper('.swiper', { pagination: { el: '.swiper-pagination' }, loop: data.medias.length > 1 });
+                if (data.medias.length > 1) {
+                    const counter = document.getElementById('m-counter');
+                    counter.style.display = 'block';
+                    counter.innerText = `1/${data.medias.length}`;
+                    
+                    new Swiper('.swiper', { 
+                        pagination: { el: '.swiper-pagination' },
+                        on: {
+                            slideChange: function () {
+                                counter.innerText = `${this.activeIndex + 1}/${data.medias.length}`;
+                            }
+                        }
+                    });
+                } else {
+                    new Swiper('.swiper', { pagination: { el: '.swiper-pagination' } });
+                }
 
                 document.getElementById('p-cat').innerText = translate[data.category] || data.category;
                 document.getElementById('p-name').innerText = data.name;
@@ -184,8 +206,9 @@
                 document.getElementById('p-delivery').innerText = translate[data.deliveryType] || data.deliveryType;
                 document.getElementById('p-chat').href = `https://t.me/${data.sellerContact.replace('@','')}`;
 
-                isFav = data.isFavourites;
-                if(isFav) document.getElementById('favBtn').classList.add('active');
+                if(data.isFavourites) {
+                    document.getElementById('favBtn').classList.add('active');
+                }
 
                 const pr = data.recommendedPrecent || 0;
                 document.getElementById('p-percent').innerText = pr + "%";
@@ -204,24 +227,18 @@
             try {
                 const res = await fetch(`https://api.loopa.buzz/api/favourite/add?productId=${productId}`, {
                     method: 'POST',
-                    headers: { 
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
-                
                 if(res.ok) {
                     document.getElementById('favBtn').classList.add('active');
                     tg.HapticFeedback.notificationOccurred('success');
                 }
-            } catch(e) { 
-                tg.showAlert("Xatolik yuz berdi"); 
-            }
+            } catch(e) { tg.showAlert("Xatolik yuz berdi"); }
         }
 
         function voteAction() {
             tg.showConfirm("Ushbu mahsulotni tavsiya qilasizmi?", async (ok) => {
-                const res = await fetch(`https://api.loopa.buzz/api/votes?productId=${id}&recommended=${ok}`, {
+                const res = await fetch(`https://api.loopa.buzz/api/votes?productId=${productId}&recommended=${ok}`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
