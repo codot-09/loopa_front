@@ -146,13 +146,16 @@
 
             try {
                 const res = await fetch('https://api.loopa.buzz/api/products/my-products', {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: { 
+                        'accept': '*/*',
+                        'Authorization': `Bearer ${token}` 
+                    }
                 });
-                const data = await res.json();
+                const result = await res.json();
                 loadingEl.style.display = 'none';
 
-                if (data && data.length > 0) {
-                    listEl.innerHTML = data.map(p => `
+                if (result.success && result.data && result.data.length > 0) {
+                    listEl.innerHTML = result.data.map(p => `
                         <div class="item-card" onclick="tg.HapticFeedback.impactOccurred('light')">
                             <img src="${p.cover}" class="item-img" onerror="this.src='https://via.placeholder.com/150'">
                             <div class="item-details">
