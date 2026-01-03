@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sotuvchi bo'lish</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--text-main); padding: 16px; line-height: 1.5; }
+
+        .card { background: var(--white); padding: 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h2 { font-size: 1.4rem; font-weight: 850; color: var(--primary); }
+        .header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+        .terms-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+        .term-card {
+            background: #f8fafc; padding: 14px; border-radius: 16px;
+            border-left: 4px solid var(--accent);
+        }
+        .term-card.warning { border-left-color: var(--danger); }
+        .term-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 4px; }
+        .term-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+        .checkbox-container {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 16px; background: #eff6ff; border-radius: 16px; cursor: pointer;
+        }
+        input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+        .checkbox-text { font-size: 0.85rem; font-weight: 600; color: var(--primary); cursor: pointer; }
+
+        .btn {
+            width: 100%; padding: 16px; border-radius: 16px; border: none;
+            background: var(--accent); color: white; font-size: 1rem; font-weight: 700;
+            margin-top: 20px; cursor: pointer; transition: 0.2s; opacity: 0.4; pointer-events: none;
+        }
+        .btn.active { opacity: 1; pointer-events: all; box-shadow: 0 10px 20px rgba(58, 134, 255, 0.25); }
+
+        #successOverlay {
+            position: fixed; inset: 0; background: var(--white); z-index: 1000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; text-align: center;
+        }
+        .status-icon { width: 70px; height: 70px; background: #ecfdf5; color: var(--success); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <h2>Hamkorlik shartlari</h2>
+            <p>Loopa platformasida sotuvchi bo'lish tartibi</p>
+        </div>
+        
+        <div class="terms-list">
+            <div class="term-card">
+                <span class="term-title">🤝 Halollik tamoyili</span>
+                <p class="term-desc">Xaridorlarga faqat sifatli va tavsifga mos mahsulotlarni yetkazib berish majburiy.</p>
+            </div>
+            <div class="term-card">
+                <span class="term-title">💬 Xushmuomalalik</span>
+                <p class="term-desc">Mijozlar bilan muloqotda odob doirasidan chiqmaslik va savollarga tezkor javob berish.</p>
+            </div>
+            <div class="term-card warning">
+                <span class="term-title">⚖️ Javobgarlik</span>
+                <p class="term-desc">Tovlamachilik, buyurtmani qasddan yubormaslik yoki firibgarlik qonuniy javobgarlikka sabab bo'ladi.</p>
+            </div>
+            <div class="term-card warning">
+                <span class="term-title">🚫 Qat'iy taqiq</span>
+                <p class="term-desc">Platformadan tashqarida savdo qilishga urinish profilni butunlay bloklanishiga olib keladi.</p>
+            </div>
+        </div>
+
+        <label class="checkbox-container">
+            <input type="checkbox" id="agreeCheck">
+            <span class="checkbox-text">Men barcha shartlarni o'qib chiqdim, tushundim va javobgarlikni o'z bo'ynimga olaman.</span>
+        </label>
+
+        <button id="submitBtn" class="btn">Arizani yuborish</button>
+    </div>
+
+    <div id="successOverlay">
+        <div class="status-icon">✓</div>
+        <h2 style="color: var(--primary); margin-bottom: 12px;">Arizangiz qabul qilindi!</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Adminlarimiz ma'lumotlaringizni tekshirib, tez orada siz bilan bog'lanishadi.</p>
+        <button class="btn active" onclick="window.location.href='dashboard.html'" style="max-width: 200px;">Tushunarli</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const check = document.getElementById('agreeCheck');
+        const btn = document.getElementById('submitBtn');
+        const overlay = document.getElementById('successOverlay');
+
+        check.addEventListener('change', () => {
+            if(check.checked) {
+                btn.classList.add('active');
+                tg.HapticFeedback.impactOccurred('medium');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        btn.addEventListener('click', async () => {
+            tg.HapticFeedback.notificationOccurred('success');
+            overlay.style.display = 'flex';
+            
+            try {
+                await fetch('https://api.loopa.buzz/api/seller/apply', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+            } catch (e) { console.error('Error'); }
+        });
+
+        tg.ready();
+        tg.expand();
+    </script>
+</body>
+</html>

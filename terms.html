@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Foydalanish shartlari</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--text-main); padding-bottom: 40px; }
+
+        .top-nav {
+            background: var(--white); padding: 16px; display: flex; align-items: center;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .back-btn {
+            background: #f1f5f9; border: none; width: 36px; height: 36px;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--primary);
+        }
+        .nav-title { margin-left: 15px; font-weight: 700; font-size: 1.1rem; }
+
+        .content { padding: 20px; }
+        
+        .section { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .section-title { 
+            display: flex; align-items: center; gap: 10px; font-size: 1rem; 
+            font-weight: 800; color: var(--accent); margin-bottom: 15px; 
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .rule-item { margin-bottom: 16px; display: flex; gap: 12px; }
+        .rule-dot { 
+            min-width: 6px; height: 6px; background: var(--accent); 
+            border-radius: 50%; margin-top: 8px; flex-shrink: 0;
+        }
+        .rule-text { font-size: 0.95rem; line-height: 1.5; color: var(--text-main); }
+        .rule-text b { color: var(--primary); }
+
+        .footer-note { text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <button class="back-btn" onclick="history.back()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span class="nav-title">Ma'lumotlar va Shartlar</span>
+    </nav>
+
+    <div class="content">
+        <div class="section">
+            <div class="section-title">📦 Xaridorlar uchun</div>
+            <div class="rule-item">
+                <div class="rule-dot"></div>
+                <p class="rule-text"><b>Buyurtma berish:</b> Har bir foydalanuvchi mahsulotlarni tanlash va sotuvchi bilan bevosita bog'lanish huquqiga ega.</p>
+            </div>
+            <div class="rule-item">
+                <div class="rule-dot"></div>
+                <p class="rule-text"><b>To'lovlar:</b> Platforma hozirda xavfsizlik maqsadida to'lovlarni bevosita qabul qilmaydi, barcha hisob-kitoblar kelishuv asosida amalga oshadi.</p>
+            </div>
+            <div class="rule-item">
+                <div class="rule-dot"></div>
+                <p class="rule-text"><b>Sifat nazorati:</b> Agar qabul qilingan mahsulot tavsifga mos kelmasa, foydalanuvchi shikoyat qilish huquqiga ega.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🤝 Hamkorlik</div>
+            <div class="rule-item">
+                <div class="rule-dot"></div>
+                <p class="rule-text"><b>Sotuvchi bo'lish:</b> Ilovada hamma sotuvchi bo'lishi mumkin, biroq har bir ariza adminlar tomonidan qat'iy tekshiruvdan o'tadi.</p>
+            </div>
+            <div class="rule-item">
+                <div class="rule-dot"></div>
+                <p class="rule-text"><b>Mas'uliyat:</b> Sotuvchi o'z mahsuloti sifati va mijozga yetkazilgan ma'lumotning to'g'riligi uchun to'liq javobgar hisoblanadi.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🛡 Xavfsizlik</div>
+            <div class="rule-item">
+                <div class="rule-dot"></div>
+                <p class="rule-text"><b>Ma'lumotlar:</b> Sizning shaxsiy ma'lumotlaringiz (Telegram ID, ism) faqat xarid jarayonini osonlashtirish uchun foydalaniladi.</p>
+            </div>
+            <div class="rule-item">
+                <div class="rule-dot"></div>
+                <p class="rule-text"><b>Taqiqlar:</b> Noqonuniy mahsulotlar, firibgarlik va boshqa foydalanuvchilarga nisbatan haqoratli munosabat profilning abadiy bloklanishiga sabab bo'ladi.</p>
+            </div>
+        </div>
+
+        <p class="footer-note">Oxirgi yangilanish: 2024-yil iyun</p>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        
+        // Telegram orqali ham "Back" tugmasini ishlatish imkoniyati
+        tg.BackButton.show();
+        tg.BackButton.onClick(() => {
+            history.back();
+        });
+    </script>
+</body>
+</html>
