@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Loopa - Seller Panel</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --text-muted: #64748b;
+            --border: rgba(0,0,0,0.05);
+            --success: #2ec4b6;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); min-height: 100vh; padding-bottom: 100px; }
+
+        header {
+            background: var(--white);
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .seller-badge {
+            background: #eef5ff;
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .container { padding: 20px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 16px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+        }
+
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+        .stat-value { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+
+        .chart-mock {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+        }
+
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .chart-title { font-size: 0.95rem; font-weight: 700; }
+
+        .bar-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 120px;
+            padding-top: 10px;
+        }
+
+        .bar {
+            width: 12%;
+            background: var(--accent);
+            border-radius: 6px 6px 2px 2px;
+            position: relative;
+            min-height: 10px;
+            opacity: 0.8;
+        }
+
+        .recent-sales {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; }
+
+        .sale-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .sale-item:last-child { border-bottom: none; }
+
+        .sale-info h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+        .sale-info p { font-size: 0.75rem; color: var(--text-muted); }
+        .sale-price { font-size: 0.85rem; font-weight: 700; color: var(--success); }
+
+        .nav {
+            position: fixed;
+            bottom: 20px; left: 20px; right: 20px;
+            height: 64px;
+            background: rgba(1, 22, 39, 0.98);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; transition: 0.2s; }
+        .nav-link.active { color: var(--white); }
+        .nav-link svg { width: 20px; height: 20px; }
+        .nav-label { font-size: 0.65rem; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <span class="brand-name" style="font-weight: 800;">Loopa Seller</span>
+        <span class="seller-badge">Premium</span>
+    </header>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <p class="stat-label">Balans</p>
+                <p class="stat-value">1,250,000</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Sotuvlar</p>
+                <p class="stat-value">48 ta</p>
+            </div>
+        </div>
+
+        <div class="chart-mock">
+            <div class="chart-header">
+                <p class="chart-title">Haftalik statistika</p>
+                <span style="font-size: 0.7rem; color: var(--success);">+12.5% ↑</span>
+            </div>
+            <div class="bar-container">
+                <div class="bar" style="height: 40%;"></div>
+                <div class="bar" style="height: 65%;"></div>
+                <div class="bar" style="height: 45%;"></div>
+                <div class="bar" style="height: 90%;"></div>
+                <div class="bar" style="height: 55%;"></div>
+                <div class="bar" style="height: 75%;"></div>
+                <div class="bar" style="height: 60%;"></div>
+            </div>
+        </div>
+
+        <div class="recent-sales">
+            <h3 class="section-title">So'nggi buyurtmalar</h3>
+            <div class="sale-item">
+                <div class="sale-info">
+                    <h4>iPhone 13 Case</h4>
+                    <p>Bugun, 14:20</p>
+                </div>
+                <span class="sale-price">45,000 so'm</span>
+            </div>
+            <div class="sale-item">
+                <div class="sale-info">
+                    <h4>AirPods Pro Silk</h4>
+                    <p>Kecha, 18:05</p>
+                </div>
+                <span class="sale-price">120,000 so'm</span>
+            </div>
+            <div class="sale-item">
+                <div class="sale-info">
+                    <h4>MagSafe Charger</h4>
+                    <p>2 kun avval</p>
+                </div>
+                <span class="sale-price">280,000 so'm</span>
+            </div>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <a href="seller-dashboard.html" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            <span class="nav-label">Asosiy</span>
+        </a>
+        <a href="seller-products.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="11" y2="17"></line></svg>
+            <span class="nav-label">Mahsulotlar</span>
+        </a>
+        <a href="seller-profile.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span class="nav-label">Profil</span>
+        </a>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => tg.HapticFeedback.impactOccurred('medium'));
+        });
+    </script>
+</body>
+</html>

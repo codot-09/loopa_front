@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yangi mahsulot</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --text-muted: #64748b;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); padding-bottom: 40px; }
+        header { background: var(--white); padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); position: sticky; top:0; z-index: 100; }
+        .container { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); padding-left: 4px; }
+        input, select, textarea { 
+            width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); 
+            background: var(--white); font-size: 1rem; outline: none; color: var(--primary);
+        }
+        .media-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 8px; }
+        .media-box { 
+            aspect-ratio: 1; border: 2px dashed var(--border); border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+        }
+        .media-box img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-submit { 
+            background: var(--accent); color: var(--white); border: none; padding: 16px; 
+            border-radius: 16px; font-size: 1rem; font-weight: 700; margin-top: 10px;
+        }
+        .loading-overlay { 
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); 
+            z-index: 1000; align-items: center; justify-content: center; color: white; font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader" class="loading-overlay">Yuklanmoqda...</div>
+    <header>
+        <button onclick="history.back()" style="background:none; border:none; color: var(--primary);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <h2 style="font-size: 1.1rem; font-weight: 800;">Mahsulot qo'shish</h2>
+    </header>
+
+    <div class="container">
+        <div class="form-group">
+            <label>Rasmlar</label>
+            <div class="media-grid" id="mediaGrid">
+                <label class="media-box">
+                    <span style="font-size: 1.5rem; color: var(--text-muted);">+</span>
+                    <input type="file" hidden accept="image/*" onchange="uploadMedia(this)">
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Nomi</label>
+            <input type="text" id="name" placeholder="Masalan: iPhone 15 Pro">
+        </div>
+
+        <div class="form-group">
+            <label>Kategoriya</label>
+            <select id="category">
+                <option value="ELECTRONICS">Elektronika</option>
+                <option value="CLOTHES">Kiyimlar</option>
+                <option value="TOYS">O'yinchoqlar</option>
+                <option value="SPORT_INSTRUMENTS">Sport</option>
+                <option value="BEAUTY">Go'zallik</option>
+                <option value="HOME">Uy-ro'zg'or</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Narxi</label>
+            <div style="display:flex; gap:8px;">
+                <input type="number" id="price" placeholder="Narx">
+                <select id="priceType" style="width: 45%;">
+                    <option value="FIXED">Aniq narx</option>
+                    <option value="NEGOTIABLE">Kelishuv</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Yetkazib berish</label>
+            <select id="deliveryType">
+                <option value="AVAILABLE">Mavjud</option>
+                <option value="REGIONAL">Viloyat bo'ylab</option>
+                <option value="NOT_AVAILABLE">Mavjud emas</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Manzil</label>
+            <select id="locationId">
+                <option value="">Yuklanmoqda...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Tavsif</label>
+            <textarea id="description" rows="4" placeholder="Mahsulot haqida batafsil..."></textarea>
+        </div>
+
+        <button class="btn-submit" onclick="submitForm()">Mahsulotni yaratish</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const token = localStorage.getItem('token');
+        let uploadedMedias = [];
+
+        async function loadLocations() {
+            try {
+                const res = await fetch('https://api.loopa.buzz/api/location/my-locations', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const json = await res.json();
+                const select = document.getElementById('locationId');
+                
+                if (json.success && json.data.length > 0) {
+                    select.innerHTML = json.data.map(l => `<option value="${l.id}">${l.region}</option>`).join('');
+                } else {
+                    tg.showConfirm("Sizda saqlangan manzil yo'q. Manzil qo'shish sahifasiga o'tasizmi?", (ok) => {
+                        if (ok) window.location.href = 'add-location.html';
+                        else history.back();
+                    });
+                }
+            } catch (e) {
+                tg.showAlert("Manzillarni yuklashda xatolik");
+            }
+        }
+
+        async function uploadMedia(input) {
+            if (!input.files[0]) return;
+            document.getElementById('loader').style.display = 'flex';
+            const formData = new FormData();
+            formData.append('file', input.files[0]);
+
+            try {
+                const res = await fetch('https://api.loopa.buzz/api/media/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const mediaId = await res.text();
+                uploadedMedias.push(mediaId);
+
+                const div = document.createElement('div');
+                div.className = 'media-box';
+                div.innerHTML = `<img src="${URL.createObjectURL(input.files[0])}">`;
+                document.getElementById('mediaGrid').prepend(div);
+                tg.HapticFeedback.impactOccurred('light');
+            } catch (e) {
+                tg.showAlert("Rasm yuklashda xatolik");
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+                input.value = '';
+            }
+        }
+
+        async function submitForm() {
+            const data = {
+                name: document.getElementById('name').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                price: parseFloat(document.getElementById('price').value),
+                medias: uploadedMedias,
+                category: document.getElementById('category').value,
+                priceType: document.getElementById('priceType').value,
+                deliveryType: document.getElementById('deliveryType').value,
+                locationId: document.getElementById('locationId').value
+            };
+
+            if(!data.name || !data.price || uploadedMedias.length === 0 || !data.locationId) {
+                tg.showAlert("Iltimos, barcha maydonlarni to'ldiring va kamida bitta rasm yuklang.");
+                return;
+            }
+
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                const res = await fetch('https://api.loopa.buzz/api/products/new-product', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify(data)
+                });
+                if(res.ok) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert("Mahsulot muvaffaqiyatli yaratildi!", () => history.back());
+                } else {
+                    tg.showAlert("Xatolik yuz berdi, ma'lumotlarni tekshiring.");
+                }
+            } catch (e) {
+                tg.showAlert("Tarmoq ulanishida xatolik");
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        }
+
+        tg.ready();
+        tg.expand();
+        loadLocations();
+    </script>
+</body>
+</html>

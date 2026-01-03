@@ -144,7 +144,8 @@
                     if(result.data.newUser) {
                         window.location.href = 'interests.html';
                     } else {
-                        window.location.href = (result.data.role === 'ADMIN') ? 'admin.html' : 'dashboard.html';
+                        const target = result.data.role === 'SELLER' ? 'seller-dashboard.html' : 'dashboard.html';
+                        window.location.href = target;
                     }
                 } else {
                     tg.showAlert(result.message || "Kirishda xatolik yuz berdi.");
