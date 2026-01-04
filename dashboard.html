@@ -32,7 +32,20 @@
         }
 
         .brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
-        .logo { width: 30px; height: 30px; object-fit: contain; }
+        
+        .logo-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--white);
+        }
+        .logo { width: 80%; height: 80%; object-fit: contain; }
+        
         .brand-name { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.8px; color: var(--primary); }
 
         .search-area { position: relative; width: 100%; margin-bottom: 16px; }
@@ -95,13 +108,12 @@
             position: absolute;
             top: 8px;
             left: 8px;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
             font-weight: 900;
             color: white;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             z-index: 2;
         }
 
@@ -126,7 +138,7 @@
             text-align: center;
         }
 
-        .product-price { font-size: 1.05rem; font-weight: 900; color: var(--accent); letter-spacing: -0.3px; }
+        .product-price { font-size: 1rem; font-weight: 900; color: var(--accent); }
 
         .not-found {
             display: none;
@@ -136,17 +148,17 @@
             padding: 50px 20px;
             text-align: center;
         }
-        .not-found img { width: 180px; margin-bottom: 20px; }
+        .not-found img { width: 150px; opacity: 0.5; }
 
         .nav {
             position: fixed; bottom: 20px; left: 20px; right: 20px;
-            height: 64px; background: rgba(1, 22, 39, 0.98);
+            height: 64px; background: var(--primary);
             border-radius: 20px; display: flex; align-items: center;
-            justify-content: space-around; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1000;
+            justify-content: space-around; z-index: 1000;
         }
-        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.4); text-decoration: none; flex: 1; }
         .nav-link.active { color: var(--white); }
-        .nav-link svg { width: 20px; height: 20px; }
+        .nav-link svg { width: 22px; height: 22px; }
         .nav-label { font-size: 0.65rem; font-weight: 600; }
 
         .skeleton { background: #eef2f7; border-radius: 18px; height: 280px; animation: pulse 1.5s infinite; }
@@ -157,7 +169,9 @@
 
     <header>
         <div class="brand">
-            <img src="/assets/logo.png" alt="L" class="logo">
+            <div class="logo-wrap">
+                <img src="/assets/logo.png" alt="Logo" class="logo">
+            </div>
             <span class="brand-name">Loopa</span>
         </div>
         <div class="search-area">
@@ -206,7 +220,7 @@
         <div class="products-grid" id="productsGrid"></div>
         <div class="not-found" id="notFound">
             <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="Empty">
-            <h3>Hech narsa topilmadi</h3>
+            <h3>Topilmadi</h3>
         </div>
     </div>
 
