@@ -69,7 +69,7 @@
         }
         .category-item.active .cat-icon-wrap { background: var(--accent); transform: scale(1.05); box-shadow: 0 8px 15px rgba(58,134,255,0.2); border-color: var(--accent); }
         .category-item.active .cat-label { color: var(--accent); font-weight: 700; }
-        .cat-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); }
+        .cat-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-align: center; width: 70px; line-height: 1.1; }
 
         .container { padding: 12px; }
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -90,7 +90,6 @@
 
         .image-box { position: relative; width: 100%; height: 160px; overflow: hidden; }
         .product-cover { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-        .product-card:active .product-cover { transform: scale(1.06); }
 
         .status-tag {
             position: absolute;
@@ -104,16 +103,9 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             z-index: 2;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
         }
 
-        .product-info {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
+        .product-info { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
         .product-name {
             font-size: 0.88rem;
             font-weight: 700;
@@ -134,12 +126,7 @@
             text-align: center;
         }
 
-        .product-price {
-            font-size: 1.05rem;
-            font-weight: 900;
-            color: var(--accent);
-            letter-spacing: -0.3px;
-        }
+        .product-price { font-size: 1.05rem; font-weight: 900; color: var(--accent); letter-spacing: -0.3px; }
 
         .not-found {
             display: none;
@@ -152,18 +139,10 @@
         .not-found img { width: 180px; margin-bottom: 20px; }
 
         .nav {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            height: 64px;
-            background: rgba(1, 22, 39, 0.98);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            z-index: 1000;
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            height: 64px; background: rgba(1, 22, 39, 0.98);
+            border-radius: 20px; display: flex; align-items: center;
+            justify-content: space-around; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1000;
         }
         .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; }
         .nav-link.active { color: var(--white); }
@@ -200,6 +179,14 @@
             <div class="category-item" data-category="CLOTHES">
                 <div class="cat-icon-wrap">👔</div>
                 <div class="cat-label">Kiyimlar</div>
+            </div>
+            <div class="category-item" data-category="TOYS">
+                <div class="cat-icon-wrap">🧸</div>
+                <div class="cat-label">O'yinchoqlar</div>
+            </div>
+            <div class="category-item" data-category="SPORT_INSTRUMENTS">
+                <div class="cat-icon-wrap">⚽</div>
+                <div class="cat-label">Sport</div>
             </div>
             <div class="category-item" data-category="HOME">
                 <div class="cat-icon-wrap">🪴</div>
@@ -280,7 +267,7 @@
                 shim.style.display = 'none';
                 if (json.success && json.data?.content?.length) {
                     grid.innerHTML = json.data.content.map((p, i) => {
-                        const tags = [['var(--hot)', 'Issiq Taklif!'], ['var(--new)', 'Yangi Kelgan!'], ['var(--sale)', 'Aksiya!']];
+                        const tags = [['var(--hot)', 'Issiq!'], ['var(--new)', 'Yangi!'], ['var(--sale)', 'Sale!']];
                         const t = tags[i % 3];
                         return `
                         <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
