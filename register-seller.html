@@ -7,123 +7,153 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --primary: #011627;
-            --accent: #3a86ff;
-            --bg: #f8fafc;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --bg: #f1f5f9;
             --white: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --success: #10b981;
             --danger: #ef4444;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--text-main); padding: 16px; line-height: 1.5; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--text-main); padding: 16px; }
 
-        .card { background: var(--white); padding: 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .card { background: var(--white); padding: 20px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         
-        .header { text-align: center; margin-bottom: 24px; }
-        .header h2 { font-size: 1.4rem; font-weight: 850; color: var(--primary); }
-        .header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h2 { font-size: 1.25rem; font-weight: 800; color: var(--primary); }
+        .header p { font-size: 0.85rem; color: var(--text-muted); }
 
-        .terms-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
-        .term-card {
-            background: #f8fafc; padding: 14px; border-radius: 16px;
-            border-left: 4px solid var(--accent);
+        .input-group { margin-bottom: 16px; }
+        .input-label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
+        
+        input, textarea {
+            width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 12px;
+            font-size: 0.95rem; outline: none; transition: 0.2s; background: #f8fafc;
         }
-        .term-card.warning { border-left-color: var(--danger); }
-        .term-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 4px; }
-        .term-desc { font-size: 0.85rem; color: var(--text-muted); }
+        input:focus, textarea:focus { border-color: var(--accent); background: #fff; }
+
+        .rules-box {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 12px; margin-bottom: 16px; max-height: 120px; overflow-y: auto;
+        }
+        .rule-item { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; display: flex; gap: 8px; }
 
         .checkbox-container {
-            display: flex; align-items: flex-start; gap: 12px;
-            padding: 16px; background: #eff6ff; border-radius: 16px; cursor: pointer;
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 12px; background: #f0f7ff; border-radius: 12px; cursor: pointer;
         }
-        input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
-        .checkbox-text { font-size: 0.85rem; font-weight: 600; color: var(--primary); cursor: pointer; }
+        input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+        .checkbox-text { font-size: 0.8rem; font-weight: 500; color: var(--primary); }
 
         .btn {
-            width: 100%; padding: 16px; border-radius: 16px; border: none;
-            background: var(--accent); color: white; font-size: 1rem; font-weight: 700;
-            margin-top: 20px; cursor: pointer; transition: 0.2s; opacity: 0.4; pointer-events: none;
+            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            background: var(--accent); color: white; font-size: 0.95rem; font-weight: 700;
+            margin-top: 16px; cursor: pointer; transition: 0.2s; opacity: 0.5; pointer-events: none;
         }
-        .btn.active { opacity: 1; pointer-events: all; box-shadow: 0 10px 20px rgba(58, 134, 255, 0.25); }
+        .btn.active { opacity: 1; pointer-events: all; }
 
-        #successOverlay {
+        #overlay {
             position: fixed; inset: 0; background: var(--white); z-index: 1000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
             padding: 20px; text-align: center;
         }
-        .status-icon { width: 70px; height: 70px; background: #ecfdf5; color: var(--success); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; }
+        .icon-check { width: 64px; height: 64px; background: #dcfce7; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; }
     </style>
 </head>
 <body>
 
     <div class="card">
         <div class="header">
-            <h2>Hamkorlik shartlari</h2>
-            <p>Loopa platformasida sotuvchi bo'lish tartibi</p>
+            <h2>Sotuvchi bo'lish</h2>
+            <p>Loopa hamkorlik dasturi</p>
         </div>
-        
-        <div class="terms-list">
-            <div class="term-card">
-                <span class="term-title">🤝 Halollik tamoyili</span>
-                <p class="term-desc">Xaridorlarga faqat sifatli va tavsifga mos mahsulotlarni yetkazib berish majburiy.</p>
-            </div>
-            <div class="term-card">
-                <span class="term-title">💬 Xushmuomalalik</span>
-                <p class="term-desc">Mijozlar bilan muloqotda odob doirasidan chiqmaslik va savollarga tezkor javob berish.</p>
-            </div>
-            <div class="term-card warning">
-                <span class="term-title">⚖️ Javobgarlik</span>
-                <p class="term-desc">Tovlamachilik, buyurtmani qasddan yubormaslik yoki firibgarlik qonuniy javobgarlikka sabab bo'ladi.</p>
-            </div>
-            <div class="term-card warning">
-                <span class="term-title">🚫 Qat'iy taqiq</span>
-                <p class="term-desc">Platformadan tashqarida savdo qilishga urinish profilni butunlay bloklanishiga olib keladi.</p>
-            </div>
+
+        <div class="rules-box">
+            <div class="rule-item"><span>•</span> Halol savdo va sifatli mahsulot.</div>
+            <div class="rule-item"><span>•</span> Faqat O'zbekiston raqami bilan ro'yxatdan o'tish.</div>
+            <div class="rule-item"><span>•</span> Mijozlar bilan xushmuomala bo'lish.</div>
+            <div class="rule-item"><span>•</span> Firibgarlik qat'iyan taqiqlanadi.</div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Telefon raqam</label>
+            <input type="tel" id="phone" placeholder="+998 90 123 45 67" maxlength="13" value="+998">
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Maqsad yoki qo'shimcha ma'lumot</label>
+            <textarea id="info" rows="3" placeholder="Masalan: Kiyim-kechak sotmoqchiman..."></textarea>
         </div>
 
         <label class="checkbox-container">
-            <input type="checkbox" id="agreeCheck">
-            <span class="checkbox-text">Men barcha shartlarni o'qib chiqdim, tushundim va javobgarlikni o'z bo'ynimga olaman.</span>
+            <input type="checkbox" id="agree">
+            <span class="checkbox-text">Shartlarga roziman va ma'lumotlarim to'g'riligini tasdiqlayman.</span>
         </label>
 
         <button id="submitBtn" class="btn">Arizani yuborish</button>
     </div>
 
-    <div id="successOverlay">
-        <div class="status-icon">✓</div>
-        <h2 style="color: var(--primary); margin-bottom: 12px;">Arizangiz qabul qilindi!</h2>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">Adminlarimiz ma'lumotlaringizni tekshirib, tez orada siz bilan bog'lanishadi.</p>
-        <button class="btn active" onclick="window.location.href='dashboard.html'" style="max-width: 200px;">Tushunarli</button>
+    <div id="overlay">
+        <div class="icon-check">✓</div>
+        <h2 id="resTitle">Arizangiz qabul qilindi!</h2>
+        <p id="resMsg" style="color: var(--text-muted); margin-top: 8px;"></p>
+        <button class="btn active" onclick="tg.close()" style="max-width: 200px;">Yopish</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        const check = document.getElementById('agreeCheck');
-        const btn = document.getElementById('submitBtn');
-        const overlay = document.getElementById('successOverlay');
+        const phoneInput = document.getElementById('phone');
+        const infoInput = document.getElementById('info');
+        const agreeCheck = document.getElementById('agree');
+        const submitBtn = document.getElementById('submitBtn');
+        const overlay = document.getElementById('overlay');
 
-        check.addEventListener('change', () => {
-            if(check.checked) {
-                btn.classList.add('active');
-                tg.HapticFeedback.impactOccurred('medium');
+        const validate = () => {
+            const isPhoneValid = phoneInput.value.length === 13 && phoneInput.value.startsWith('+998');
+            const isInfoValid = infoInput.value.trim().length > 5;
+            if(isPhoneValid && isInfoValid && agreeCheck.checked) {
+                submitBtn.classList.add('active');
             } else {
-                btn.classList.remove('active');
+                submitBtn.classList.remove('active');
             }
-        });
+        };
 
-        btn.addEventListener('click', async () => {
-            tg.HapticFeedback.notificationOccurred('success');
-            overlay.style.display = 'flex';
-            
+        [phoneInput, infoInput, agreeCheck].forEach(el => el.addEventListener('input', validate));
+
+        submitBtn.addEventListener('click', async () => {
+            submitBtn.innerText = "Yuborilmoqda...";
+            submitBtn.style.pointerEvents = "none";
+
+            const user = tg.initDataUnsafe?.user;
+            const payload = {
+                name: user ? `${user.first_name} ${user.last_name || ''}`.trim() : "Telegram User",
+                sellerInfo: infoInput.value,
+                contact: phoneInput.value
+            };
+
             try {
-                await fetch('https://api.loopa.buzz/api/seller/apply', {
+                const response = await fetch('https://api.loopa.buzz/api/requests/create', {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                    },
+                    body: JSON.stringify(payload)
                 });
-            } catch (e) { console.error('Error'); }
+                const res = await response.json();
+
+                if(res.success) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    document.getElementById('resMsg').innerText = res.message;
+                    overlay.style.display = 'flex';
+                }
+            } catch (e) {
+                alert("Xatolik yuz berdi. Qaytadan urinib ko'ring.");
+                submitBtn.innerText = "Arizani yuborish";
+                submitBtn.style.pointerEvents = "all";
+            }
         });
 
         tg.ready();

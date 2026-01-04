@@ -167,7 +167,7 @@
             ELECTRONICS: "Elektronika", CLOTHES: "Kiyim-kechak", HOME: "Uy-ro'zg'or", BEAUTY: "Go'zallik"
         };
 
-        async function init() {
+       async function init() {
             try {
                 const res = await fetch(`https://api.loopa.buzz/api/products/${productId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -198,7 +198,13 @@
                 document.getElementById('p-desc').innerText = data.description;
                 document.getElementById('p-region').innerText = data.locationResponse.region;
                 document.getElementById('p-delivery').innerText = translate[data.deliveryType] || data.deliveryType;
-                document.getElementById('p-chat').href = `https://t.me/${data.sellerContact.replace('@','')}`;
+                
+                const chatBtn = document.getElementById('p-chat');
+                chatBtn.onclick = (e) => {
+                    e.preventDefault();
+                    const username = data.sellerContact.replace('@', '');
+                    tg.openTelegramLink(`https://t.me/${username}`);
+                };
 
                 if(data.isFavourite) document.getElementById('favBtn').classList.add('active');
 
