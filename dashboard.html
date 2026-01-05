@@ -17,11 +17,10 @@
             --hot: linear-gradient(135deg, #ff3b30, #ff6b6b);
             --new: linear-gradient(135deg, #4facfe, #00f2fe);
             --sale: linear-gradient(135deg, #ffd43b, #ff922b);
+            --premium: linear-gradient(135deg, #ffd700, #ff8c00);
         }
-
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--text-main); min-height: 100vh; padding-bottom: 110px; }
-
         header {
             background: var(--white);
             padding: 14px 16px;
@@ -30,9 +29,7 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
-
         .brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
-        
         .logo-wrap {
             width: 42px;
             height: 42px;
@@ -45,15 +42,13 @@
             background: var(--white);
             flex-shrink: 0;
         }
-        .logo { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            transform: scale(1.15); /* Ichki rasmni aylana ichida kattalashtirish */
+        .logo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: scale(1.15);
         }
-        
         .brand-name { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.8px; color: var(--primary); }
-
         .search-area { position: relative; width: 100%; margin-bottom: 16px; }
         .search-bar {
             background: #f1f3f5;
@@ -66,7 +61,6 @@
         }
         .search-bar:focus-within { background: var(--white); border-color: var(--accent); }
         .search-bar input { border: none; background: transparent; width: 100%; font-size: 0.95rem; outline: none; }
-
         .search-history {
             position: absolute; top: 100%; left: 0; right: 0;
             background: var(--white); border-radius: 12px;
@@ -76,7 +70,6 @@
         }
         .search-history.active { display: block; }
         .history-item { padding: 10px; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; border-radius: 8px; }
-
         .categories { display: flex; gap: 12px; overflow-x: auto; padding: 5px 0; scrollbar-width: none; }
         .categories::-webkit-scrollbar { display: none; }
         .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 65px; cursor: pointer; }
@@ -89,10 +82,11 @@
         .category-item.active .cat-icon-wrap { background: var(--accent); transform: scale(1.05); box-shadow: 0 8px 15px rgba(58,134,255,0.2); border-color: var(--accent); }
         .category-item.active .cat-label { color: var(--accent); font-weight: 700; }
         .cat-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-align: center; width: 70px; line-height: 1.1; }
-
         .container { padding: 12px; }
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-
+        .premium-section { margin-bottom: 20px; }
+        .premium-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
+        .premium-slider { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scrollbar-width: none; }
+        .premium-slider::-webkit-scrollbar { display: none; }
         .product-card {
             background: var(--white);
             border-radius: 18px;
@@ -104,12 +98,12 @@
             transition: transform 0.2s ease;
             height: 280px;
             position: relative;
+            min-width: calc(50% - 6px);
         }
+        .product-card.premium { box-shadow: 0 8px 20px rgba(255,140,0,0.2); border-color: #ffd700; }
         .product-card:active { transform: scale(0.96); }
-
         .image-box { position: relative; width: 100%; height: 160px; overflow: hidden; }
         .product-cover { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-
         .status-tag {
             position: absolute;
             top: 8px;
@@ -122,7 +116,8 @@
             text-transform: uppercase;
             z-index: 2;
         }
-
+        .premium-tag { background: var(--premium); }
+        .simple-tag { background: #64748b; }
         .product-info { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
         .product-name {
             font-size: 0.88rem;
@@ -135,7 +130,6 @@
             -webkit-box-orient: vertical;
             color: var(--text-main);
         }
-
         .price-box {
             padding: 8px 12px;
             background: #f8fafc;
@@ -143,9 +137,13 @@
             border: 1px solid #f0f4f8;
             text-align: center;
         }
-
         .product-price { font-size: 1rem; font-weight: 900; color: var(--accent); }
-
+        .banners-section { margin-bottom: 20px; display: none; }
+        .banners-slider { display: flex; overflow-x: auto; gap: 12px; scrollbar-width: none; }
+        .banners-slider::-webkit-scrollbar { display: none; }
+        .banner-item { min-width: calc(100% - 24px); height: 150px; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .banner-cover { width: 100%; height: 100%; object-fit: cover; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .not-found {
             display: none;
             flex-direction: column;
@@ -155,7 +153,6 @@
             text-align: center;
         }
         .not-found img { width: 150px; opacity: 0.5; }
-
         .nav {
             position: fixed; bottom: 20px; left: 20px; right: 20px;
             height: 64px; background: var(--primary);
@@ -166,13 +163,11 @@
         .nav-link.active { color: var(--white); }
         .nav-link svg { width: 22px; height: 22px; }
         .nav-label { font-size: 0.65rem; font-weight: 600; }
-
         .skeleton { background: #eef2f7; border-radius: 18px; height: 280px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
-
     <header>
         <div class="brand">
             <div class="logo-wrap">
@@ -222,11 +217,12 @@
             </div>
         </div>
     </header>
-
     <div class="container">
         <div id="shimmer" class="products-grid">
             <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
         </div>
+        <div class="premium-section" id="premiumSection"></div>
+        <div class="banners-section" id="bannersSection"></div>
         <div class="products-grid" id="productsGrid"></div>
         <div class="not-found" id="notFound">
             <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="Empty">
@@ -234,7 +230,6 @@
             <p>Qidiruvingizga mos mahsulot topilmadi. Boshqa so'zlar bilan izlab ko'ring.</p>
         </div>
     </div>
-
     <nav class="nav">
         <a href="dashboard.html" class="nav-link active">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -249,43 +244,96 @@
             <span class="nav-label">Profil</span>
         </a>
     </nav>
-
     <script>
         const tg = window.Telegram.WebApp;
         const API_BASE = 'https://api.loopa.buzz';
         const token = localStorage.getItem('token');
         const input = document.getElementById('searchInput');
         const historyDiv = document.getElementById('searchHistory');
+        const premiumSection = document.getElementById('premiumSection');
+        const bannersSection = document.getElementById('bannersSection');
         const grid = document.getElementById('productsGrid');
         const shim = document.getElementById('shimmer');
         const notFound = document.getElementById('notFound');
-
         let query = '';
         let category = '';
-
         function saveHistory(v) {
             if (!v.trim()) return;
             let h = JSON.parse(localStorage.getItem('h') || '[]');
             h = [v, ...h.filter(i => i !== v)].slice(0, 3);
             localStorage.setItem('h', JSON.stringify(h));
         }
-
         function showHistory() {
             const h = JSON.parse(localStorage.getItem('h') || '[]');
             if (!h.length) return;
             historyDiv.innerHTML = h.map(i => `<div class="history-item" onclick="setSearch('${i}')">🕒 ${i}</div>`).join('');
             historyDiv.classList.add('active');
         }
-
         function setSearch(v) { input.value = v; query = v; historyDiv.classList.remove('active'); load(); }
-
+        async function loadPremium() {
+            try {
+                const res = await fetch(`${API_BASE}/api/products/premium`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const json = await res.json();
+                if (json.success && json.data?.length) {
+                    premiumSection.innerHTML = `
+                        <h2 class="premium-title">Premium mahsulotlar</h2>
+                        <div class="premium-slider">
+                            ${json.data.map((p, i) => `
+                                <div class="product-card premium" onclick="window.location.href='product.html?id=${p.id}'">
+                                    <div class="image-box">
+                                        <span class="status-tag premium-tag">Premium!</span>
+                                        <img src="${p.cover}" class="product-cover" onerror="this.src='https://via.placeholder.com/300'">
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name">${p.name}</h3>
+                                        <div class="price-box"><span class="product-price">${Number(p.price).toLocaleString()} so'm</span></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    premiumSection.innerHTML = '';
+                }
+            } catch (e) {
+                premiumSection.innerHTML = '';
+            }
+        }
+        async function loadBanners() {
+            try {
+                const res = await fetch(`${API_BASE}/api/banners`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const json = await res.json();
+                if (json.success && json.data?.length) {
+                    bannersSection.style.display = 'block';
+                    bannersSection.innerHTML = `
+                        <div class="banners-slider">
+                            ${json.data.map(b => `
+                                <div class="banner-item">
+                                    <img src="${b.coverImage}" alt="${b.title}" class="banner-cover">
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    bannersSection.style.display = 'none';
+                    bannersSection.innerHTML = '';
+                }
+            } catch (e) {
+                bannersSection.style.display = 'none';
+                bannersSection.innerHTML = '';
+            }
+        }
         async function load() {
-            shim.style.display = 'grid'; grid.innerHTML = ''; notFound.style.display = 'none';
+            shim.style.display = 'grid';
+            grid.innerHTML = '';
+            notFound.style.display = 'none';
+            premiumSection.innerHTML = '';
+            bannersSection.innerHTML = '';
+            bannersSection.style.display = 'none';
             const isDefault = !query && !category;
-            const url = isDefault 
-                ? `${API_BASE}/api/products/for-user` 
+            const url = isDefault
+                ? `${API_BASE}/api/products/for-user`
                 : `${API_BASE}/api/products/search?page=0&size=20&query=${encodeURIComponent(query)}&category=${category}`;
-            
             try {
                 const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
                 const json = await res.json();
@@ -295,25 +343,33 @@
                         const tags = [['var(--hot)', 'Issiq!'], ['var(--new)', 'Yangi!'], ['var(--sale)', 'Sale!']];
                         const t = tags[i % 3];
                         return `
-                        <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
-                            <div class="image-box">
-                                <span class="status-tag" style="background:${t[0]}">${t[1]}</span>
-                                <img src="${p.cover}" class="product-cover" onerror="this.src='https://via.placeholder.com/300'">
+                            <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
+                                <div class="image-box">
+                                    <span class="status-tag simple-tag" style="background:${t[0]}">${t[1]}</span>
+                                    <img src="${p.cover}" class="product-cover" onerror="this.src='https://via.placeholder.com/300'">
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-name">${p.name}</h3>
+                                    <div class="price-box"><span class="product-price">${Number(p.price).toLocaleString()} so'm</span></div>
+                                </div>
                             </div>
-                            <div class="product-info">
-                                <h3 class="product-name">${p.name}</h3>
-                                <div class="price-box"><span class="product-price">${Number(p.price).toLocaleString()} so'm</span></div>
-                            </div>
-                        </div>`;
+                        `;
                     }).join('');
-                } else { notFound.style.display = 'flex'; }
-            } catch (e) { shim.style.display = 'none'; notFound.style.display = 'flex'; }
+                    if (isDefault) {
+                        await loadPremium();
+                        await loadBanners();
+                    }
+                } else {
+                    notFound.style.display = 'flex';
+                }
+            } catch (e) {
+                shim.style.display = 'none';
+                notFound.style.display = 'flex';
+            }
         }
-
         input.addEventListener('focus', showHistory);
         input.addEventListener('blur', () => setTimeout(() => historyDiv.classList.remove('active'), 200));
         input.addEventListener('keypress', (e) => { if(e.key === 'Enter') { query = input.value; saveHistory(query); load(); input.blur(); } });
-
         document.querySelectorAll('.category-item').forEach(item => {
             item.addEventListener('click', () => {
                 tg.HapticFeedback.impactOccurred('light');
@@ -321,7 +377,6 @@
                 item.classList.add('active'); category = item.dataset.category; load();
             });
         });
-
         tg.ready(); tg.expand(); load();
     </script>
 </body>

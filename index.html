@@ -139,6 +139,9 @@
 
                 if(result.success && result.data?.token) {
                     localStorage.setItem('token', result.data.token);
+                    localStorage.setItem('role', result.data.role);
+                    localStorage.setItem('isPremium', result.data.premiumUser ?? false);
+
                     tg.HapticFeedback.notificationOccurred('success');
                     
                     if(result.data.newUser) {
