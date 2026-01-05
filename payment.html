@@ -7,61 +7,61 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root {
---primary: #011627;
---accent: #3a86ff;
---success: #2ec4b6;
---danger: #e71d36;
---bg: #f8f9fa;
---white: #ffffff;
---border: rgba(0,0,0,0.08);
---text-muted: #64748b;
+    --primary: #011627;
+    --accent: #3a86ff;
+    --success: #2ec4b6;
+    --danger: #e71d36;
+    --bg: #f8f9fa;
+    --white: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --text-muted: #64748b;
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); min-height: 100vh; padding-bottom: 30px; }
 header {
-background: var(--white); padding: 15px 20px; border-bottom: 1px solid var(--border);
-display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100;
+    background: var(--white); padding: 15px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100;
 }
 .back-btn {
-background: #f1f5f9; border: none; width: 36px; height: 36px;
-border-radius: 10px; display: flex; align-items: center; justify-content: center;
-cursor: pointer; color: var(--primary);
+    background: #f1f5f9; border: none; width: 36px; height: 36px;
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--primary);
 }
 .container { padding: 20px; }
 .payment-card {
-background: var(--white); border-radius: 24px; padding: 24px;
-text-align: center; border: 1px solid var(--border); margin-bottom: 20px;
+    background: var(--white); border-radius: 24px; padding: 24px;
+    text-align: center; border: 1px solid var(--border); margin-bottom: 20px;
 }
 .amount { font-size: 2rem; font-weight: 900; color: var(--primary); margin: 10px 0; }
 .timer { font-size: 0.9rem; color: var(--danger); font-weight: 700; margin-bottom: 20px; }
 .rules {
-background: #fff5f5; border-radius: 18px; padding: 15px;
-text-align: left; margin-bottom: 25px; border: 1px dashed var(--danger);
+    background: #fff5f5; border-radius: 18px; padding: 15px;
+    text-align: left; margin-bottom: 25px; border: 1px dashed var(--danger);
 }
 .rules p { font-size: 0.85rem; color: #b91c1c; line-height: 1.5; font-weight: 500; }
 .upload-area {
-border: 2px dashed #cbd5e1; border-radius: 20px; padding: 30px 20px;
-text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 25px;
-position: relative; overflow: hidden;
+    border: 2px dashed #cbd5e1; border-radius: 20px; padding: 30px 20px;
+    text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 25px;
+    position: relative; overflow: hidden; min-height: 160px; display: flex; align-items: center; justify-content: center;
 }
 .upload-area.active { border-color: var(--accent); background: #f0f7ff; }
-.upload-area img { max-width: 100%; max-height: 200px; border-radius: 12px; display: none; margin-top: 10px; }
+.upload-area img { max-width: 100%; max-height: 200px; border-radius: 12px; display: none; }
 .btn {
-width: 100%; padding: 18px; border-radius: 18px; font-size: 1rem;
-font-weight: 800; border: none; cursor: pointer; transition: 0.3s;
-display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 18px; border-radius: 18px; font-size: 1rem;
+    font-weight: 800; border: none; cursor: pointer; transition: 0.3s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
 }
-.btn-pay { background: var(--primary); color: white; margin-bottom: 12px; }
+.btn-pay { background: var(--primary); color: white; margin-bottom: 12px; text-decoration: none; }
 .btn-confirm { background: #cbd5e1; color: white; cursor: not-allowed; }
 .btn-confirm.active { background: var(--success); cursor: pointer; box-shadow: 0 10px 20px rgba(46, 196, 182, 0.2); }
 .modal {
-position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-background: rgba(0,0,0,0.6); display: none; align-items: center;
-justify-content: center; z-index: 1000; padding: 20px;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: none; align-items: center;
+    justify-content: center; z-index: 1000; padding: 20px;
 }
 .modal-content {
-background: white; padding: 30px; border-radius: 28px;
-text-align: center; width: 100%; max-width: 320px;
+    background: white; padding: 30px; border-radius: 28px;
+    text-align: center; width: 100%; max-width: 320px;
 }
 .modal-icon { width: 60px; height: 60px; background: #e6fffa; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
 #fileInput { display: none; }
@@ -71,44 +71,50 @@ text-align: center; width: 100%; max-width: 320px;
 </head>
 <body>
 <header>
-<button class="back-btn" onclick="history.back()">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-</button>
-<span style="font-weight: 800; font-size: 1.1rem;">To'lov qilish</span>
+    <button class="back-btn" onclick="history.back()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span style="font-weight: 800; font-size: 1.1rem;">To'lov qilish</span>
 </header>
+
 <div class="container">
-<div class="payment-card">
-<p style="font-size: 0.85rem; color: var(--text-muted);">Premium tarif uchun</p>
-<div class="amount">20,000 UZS</div>
-<div class="timer" id="timer">03:00</div>
-<button class="btn btn-pay" onclick="window.location.href='https://my.click.uz/clickp2p/65D764DEBC1A88669CD322BDA7ED0DD78039F1E642BFFD41D866DAD78C4AD5D6'">
-                Click orqali to'lash
-</button>
+    <div class="payment-card">
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Premium tarif uchun</p>
+        <div class="amount">20,000 UZS</div>
+        <div class="timer" id="timer">03:00</div>
+        <a href="https://my.click.uz/clickp2p/65D764DEBC1A88669CD322BDA7ED0DD78039F1E642BFFD41D866DAD78C4AD5D6" class="btn btn-pay">
+            Click orqali to'lash
+        </a>
+    </div>
+
+    <div class="rules">
+        <p>⚠️ DIQQAT: Soxta chek yubormang! To'lov chekini quyidagi qismga 3 daqiqa ichida yuklang. Aks holda to'lov tasdiqlanmasligi mumkin.</p>
+    </div>
+
+    <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div id="uploadPlaceholder">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">To'lov chekini yuklang (Rasm)</p>
+        </div>
+        <img id="preview">
+        <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <button id="confirmBtn" class="btn btn-confirm">
+        <span>To'lovni tasdiqlash</span>
+        <div class="loader" id="loader"></div>
+    </button>
 </div>
-<div class="rules">
-<p>⚠️ DIQQAT: Soxta chek yubormang! To'lov chekini quyidagi qismga 3 daqiqa ichida yuklang. Aks holda to'lov tasdiqlanmasligi mumkin.</p>
-</div>
-<div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
-<div id="uploadPlaceholder">
-<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-<p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">To'lov chekini yuklang (Rasm)</p>
-</div>
-<img id="preview">
-<input type="file" id="fileInput" accept="image/*">
-</div>
-<button id="confirmBtn" class="btn btn-confirm">
-<span>To'lovni tasdiqlash</span>
-<div class="loader" id="loader"></div>
-</button>
-</div>
+
 <div class="modal" id="successModal">
-<div class="modal-content">
-<div class="modal-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-<h2 style="margin-bottom: 10px;">Muvaffaqiyatli!</h2>
-<p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px;">To'lov qabul qilindi. Operatorlarimiz chekni tez orada tasdiqlashadi.</p>
-<button class="btn btn-pay" onclick="window.location.href='dashboard.html'">Yopish</button>
+    <div class="modal-content">
+        <div class="modal-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <h2 style="margin-bottom: 10px;">Muvaffaqiyatli!</h2>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px;">To'lov qabul qilindi. Operatorlarimiz chekni tez orada tasdiqlashadi.</p>
+        <button class="btn btn-pay" onclick="window.location.href='dashboard.html'">Yopish</button>
+    </div>
 </div>
-</div>
+
 <script>
 const tg = window.Telegram.WebApp;
 const API_BASE = 'https://api.loopa.buzz';
@@ -139,27 +145,23 @@ fileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Preview
     placeholder.style.display = 'none';
     preview.style.display = 'block';
     preview.src = URL.createObjectURL(file);
     dropZone.classList.add('active');
 
-    // Upload
     const formData = new FormData();
     formData.append('file', file);
 
     try {
         const res = await fetch(`${API_BASE}/api/media/upload`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Authorization': `Bearer ${token}` },
             body: formData
         });
 
         if (res.ok) {
-            uploadedUrl = await res.text(); // API faqat string URL qaytaradi
+            uploadedUrl = await res.text();
             confirmBtn.classList.add('active');
             tg.HapticFeedback.notificationOccurred('success');
         } else {
@@ -188,18 +190,21 @@ confirmBtn.addEventListener('click', async () => {
     loader.style.display = 'block';
 
     try {
-        const res = await fetch(`${API_BASE}/api/payment/pay`, {
+        const url = new URL(`${API_BASE}/api/payment/pay`);
+        url.searchParams.append('billingUrl', uploadedUrl);
+
+        const res = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'accept': '*/*',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ billingUrl: uploadedUrl })
+            body: ''
         });
 
         const data = await res.json();
 
-        if (data.success) {
+        if (data.success || res.ok) {
             document.getElementById('successModal').style.display = 'flex';
             tg.HapticFeedback.notificationOccurred('success');
         } else {
