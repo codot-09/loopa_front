@@ -272,13 +272,13 @@
         function setSearch(v) { input.value = v; query = v; historyDiv.classList.remove('active'); load(); }
         async function loadPremium() {
             try {
-                const res = await fetch(`${API_BASE}/api/products/premium`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const res = await fetch(`${API_BASE}/api/products/premium?page=0&size=20`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const json = await res.json();
-                if (json.success && json.data?.length) {
+                if (json.success && json.data?.content?.length) {
                     premiumSection.innerHTML = `
                         <h2 class="premium-title">Premium mahsulotlar</h2>
                         <div class="premium-slider">
-                            ${json.data.map((p, i) => `
+                            ${json.data.content.map((p, i) => `
                                 <div class="product-card premium" onclick="window.location.href='product.html?id=${p.id}'">
                                     <div class="image-box">
                                         <span class="status-tag premium-tag">Premium!</span>
@@ -301,7 +301,7 @@
         }
         async function loadBanners() {
             try {
-                const res = await fetch(`${API_BASE}/api/banners`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const res = await fetch(`${API_BASE}/api/v1/banners`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const json = await res.json();
                 if (json.success && json.data?.length) {
                     bannersSection.style.display = 'block';
