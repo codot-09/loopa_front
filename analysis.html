@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Loopa - Bozor Tahlili</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #011627;
+            --accent: #3a86ff;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --text-muted: #64748b;
+            --border: rgba(0,0,0,0.05);
+            --success: #2ec4b6;
+            --danger: #ef4444;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); padding-bottom: 40px; }
+
+        header {
+            background: var(--white); padding: 16px 20px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn { background: none; border: none; color: var(--primary); display: flex; align-items: center; cursor: pointer; }
+
+        .container { padding: 16px; }
+
+        .analysis-card {
+            background: var(--white); border-radius: 24px; padding: 20px;
+            margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid var(--border);
+        }
+
+        .category-badge {
+            display: inline-block; background: #eef5ff; color: var(--accent);
+            padding: 4px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: 800;
+            text-transform: uppercase; margin-bottom: 12px;
+        }
+
+        .market-share-box {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background: var(--primary); border-radius: 18px; color: white; margin-bottom: 20px;
+        }
+        .share-val { font-size: 1.4rem; font-weight: 800; color: #4cc9f0; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat-small { background: #f1f5f9; padding: 12px; border-radius: 16px; }
+        .stat-small p { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+        .stat-small h4 { font-size: 0.9rem; font-weight: 700; }
+
+        .chart-container { height: 220px; margin: 15px 0; position: relative; }
+
+        .top-list { margin-top: 20px; }
+        .section-title { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; }
+
+        .competitor-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .comp-img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
+        .comp-info { flex: 1; }
+        .comp-info h4 { font-size: 0.8rem; font-weight: 600; }
+        .comp-info p { font-size: 0.7rem; color: var(--text-muted); }
+        .comp-price { font-size: 0.8rem; font-weight: 700; }
+
+        #loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <button class="back-btn" onclick="window.history.back()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <h2 style="font-size: 1.1rem; font-weight: 800;">Bozor Analizi</h2>
+    </header>
+
+    <div class="container" id="mainContent">
+        <div id="loading">Ma'lumotlar yuklanmoqda...</div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const token = localStorage.getItem('token');
+
+        async function loadAnalysis() {
+            try {
+                const res = await fetch('https://api.loopa.buzz/api/statistics/analysis', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    renderCards(result.data);
+                }
+            } catch (e) {
+                document.getElementById('loading').innerText = "Xatolik yuz berdi";
+            }
+        }
+
+        function renderCards(data) {
+            const container = document.getElementById('mainContent');
+            container.innerHTML = data.map((item, idx) => `
+                <div class="analysis-card">
+                    <span class="category-badge">${item.categoryName}</span>
+                    
+                    <div class="market-share-box">
+                        <div style="font-size: 0.75rem; font-weight: 600; opacity: 0.8;">Bozor ulushingiz</div>
+                        <div class="share-val">${item.marketShare}%</div>
+                    </div>
+
+                    <div class="stats-row">
+                        <div class="stat-small"><p>Raqobatchilar</p><h4>${item.totalCompetitors} ta</h4></div>
+                        <div class="stat-small"><p>Jami tovarlar</p><h4>${item.totalProductsInCategory} ta</h4></div>
+                    </div>
+
+                    <p class="section-title">Narxlar balansi (UZS)</p>
+                    <div class="chart-container">
+                        <canvas id="chart-${idx}"></canvas>
+                    </div>
+
+                    <div class="top-list">
+                        <p class="section-title">Raqobatchi Top Tovarllari</p>
+                        ${item.topViewedProducts.map(p => `
+                            <div class="competitor-item">
+                                <img src="${p.cover}" class="comp-img" onerror="this.src='https://placehold.co/100x100'">
+                                <div class="comp-info">
+                                    <h4>${p.name}</h4>
+                                    <p>★ ${p.recommendedCount} tavsiya</p>
+                                </div>
+                                <div class="comp-price">${p.price.toLocaleString()}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            data.forEach((item, idx) => initChart(`chart-${idx}`, item));
+        }
+
+        
+
+        function initChart(canvasId, item) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Min', 'O\'rtacha', 'Max'],
+                    datasets: [{
+                        data: [item.minPrice, item.averagePrice, item.maxPrice],
+                        backgroundColor: ['#64748b', '#3a86ff', '#011627'],
+                        borderRadius: 8,
+                        barThickness: 30
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false, beginAtZero: true },
+                        x: { grid: { display: false }, ticks: { font: { size: 10, weight: '700' } } }
+                    }
+                }
+            });
+        }
+
+        tg.ready();
+        loadAnalysis();
+    </script>
+</body>
+</html>

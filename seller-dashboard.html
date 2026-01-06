@@ -1,230 +1,466 @@
 <!DOCTYPE html>
 <html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Loopa - Seller Panel</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --primary: #011627;
-            --accent: #3a86ff;
-            --premium: #ffb703;
-            --premium-grad: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
-            --bg: #f8f9fa;
-            --white: #ffffff;
-            --text-muted: #64748b;
-            --border: rgba(0,0,0,0.05);
-            --success: #2ec4b6;
-        }
-
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); min-height: 100vh; padding-bottom: 100px; }
-
-        header {
-            background: var(--white); padding: 20px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100;
-        }
-
-        .header-left { display: flex; align-items: center; gap: 8px; }
-        .verified-badge { display: none; color: #fb8500; }
-
-        .seller-badge {
-            background: #eef5ff; color: var(--accent);
-            padding: 4px 12px; border-radius: 12px;
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-        }
-
-        .container { padding: 20px; }
-
-        .premium-promo {
-            display: none; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            border-radius: 24px; padding: 20px; color: white; margin-bottom: 20px;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
-        }
-        .premium-promo h3 { font-size: 1.1rem; margin-bottom: 6px; }
-        .premium-promo p { font-size: 0.8rem; opacity: 0.9; margin-bottom: 15px; }
-        .promo-btn {
-            background: var(--premium-grad); color: white; border: none;
-            padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;
-        }
-
-        .banner-card {
-            display: none; background: var(--primary); border-radius: 24px;
-            padding: 20px; color: white; margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .banner-btn {
-            background: var(--white); color: var(--primary); border: none;
-            padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;
-        }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-        .stat-card {
-            background: var(--white); padding: 16px; border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid var(--border);
-        }
-        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
-        .stat-value { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
-
-        .chart-mock {
-            background: var(--white); border-radius: 24px; padding: 20px;
-            margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid var(--border);
-        }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .chart-title { font-size: 0.95rem; font-weight: 700; }
-
-        .progress-container { height: 12px; background: #f1f5f9; border-radius: 10px; overflow: hidden; margin: 10px 0; }
-        .progress-fill { height: 100%; background: var(--accent); transition: 1s ease; width: 0%; }
-
-        .recent-sales { background: var(--white); border-radius: 24px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
-        .section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; }
-
-        .sale-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 0; border-bottom: 1px solid var(--border);
-        }
-        .sale-item:last-child { border-bottom: none; }
-        .product-img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: #f1f5f9; }
-        .sale-info { flex: 1; }
-        .sale-info h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
-        .sale-info p { font-size: 0.75rem; color: var(--text-muted); }
-        .sale-price { font-size: 0.85rem; font-weight: 700; color: var(--success); }
-
-        .ai-fab {
-            position: fixed; bottom: 100px; right: 20px; width: 56px; height: 56px;
-            background: linear-gradient(135deg, #3a86ff, #8338ec);
-            border-radius: 28px; display: flex; align-items: center; justify-content: center;
-            color: white; box-shadow: 0 8px 20px rgba(58, 134, 255, 0.3); z-index: 99;
-        }
-
-        .nav {
-            position: fixed; bottom: 20px; left: 20px; right: 20px;
-            height: 64px; background: rgba(1, 22, 39, 0.98);
-            border-radius: 20px; display: flex; align-items: center;
-            justify-content: space-around; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1000;
-        }
-        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; transition: 0.2s; }
-        .nav-link.active { color: var(--white); }
-        .nav-link svg { width: 20px; height: 20px; }
-        .nav-label { font-size: 0.65rem; font-weight: 600; }
+      :root {
+        --primary: #011627;
+        --accent: #3a86ff;
+        --premium: #ffb703;
+        --premium-grad: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+        --bg: #f8f9fa;
+        --white: #ffffff;
+        --text-muted: #64748b;
+        --border: rgba(0, 0, 0, 0.05);
+        --success: #2ec4b6;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        background: var(--bg);
+        font-family: -apple-system, system-ui, sans-serif;
+        color: var(--primary);
+        min-height: 100vh;
+        padding-bottom: 100px;
+      }
+      header {
+        background: var(--white);
+        padding: 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .verified-badge {
+        display: none;
+        color: #fb8500;
+      }
+      .seller-badge {
+        background: #eef5ff;
+        color: var(--accent);
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .container {
+        padding: 20px;
+      }
+      .premium-promo {
+        display: none;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        border-radius: 24px;
+        padding: 20px;
+        color: white;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+      }
+      .premium-promo h3 {
+        font-size: 1.1rem;
+        margin-bottom: 6px;
+      }
+      .premium-promo p {
+        font-size: 0.8rem;
+        opacity: 0.9;
+        margin-bottom: 15px;
+      }
+      .promo-btn {
+        background: var(--premium-grad);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.85rem;
+      }
+      .banner-card {
+        display: none;
+        background: var(--primary);
+        border-radius: 24px;
+        padding: 20px;
+        color: white;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .banner-btn {
+        background: var(--white);
+        color: var(--primary);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.85rem;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .stat-card {
+        background: var(--white);
+        padding: 16px;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border);
+      }
+      .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .stat-value {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .chart-mock {
+        background: var(--white);
+        border-radius: 24px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border);
+      }
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .chart-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+      .progress-container {
+        height: 12px;
+        background: #f1f5f9;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        transition: 1s ease;
+        width: 0%;
+      }
+      .recent-sales {
+        background: var(--white);
+        border-radius: 24px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      }
+      .section-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .sale-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .sale-item:last-child {
+        border-bottom: none;
+      }
+      .product-img {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        object-fit: cover;
+        background: #f1f5f9;
+      }
+      .sale-info {
+        flex: 1;
+      }
+      .sale-info h4 {
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .sale-info p {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+      .sale-price {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--success);
+      }
+      .ai-fab {
+        position: fixed;
+        bottom: 100px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #3a86ff, #8338ec);
+        border-radius: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 8px 20px rgba(58, 134, 255, 0.3);
+        z-index: 99;
+      }
+      .nav {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        height: 64px;
+        background: rgba(1, 22, 39, 0.98);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+      }
+      .nav-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        flex: 1;
+        transition: 0.2s;
+      }
+      .nav-link.active {
+        color: var(--white);
+      }
+      .nav-link svg {
+        width: 20px;
+        height: 20px;
+      }
+      .nav-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <header>
-        <div class="header-left">
-            <span id="sellerName" style="font-weight: 800;">Loopa Seller</span>
-            <svg id="premiumV" class="verified-badge" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-        </div>
-        <span id="roleTag" class="seller-badge">Sotuvchi</span>
+      <div class="header-left">
+        <span id="sellerName" style="font-weight: 800">Loopa Seller</span>
+        <svg
+          id="premiumV"
+          class="verified-badge"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+          />
+        </svg>
+      </div>
+      <span id="roleTag" class="seller-badge">Sotuvchi</span>
     </header>
-
     <div class="container">
-        <div id="nonPremiumUI" class="premium-promo">
-            <h3>Premium'ga o'ting</h3>
-            <p>Qidiruvda yuqorida chiqish va maxsus badge'ga ega bo'ling.</p>
-            <button class="promo-btn" onclick="window.location.href='premium-info.html'">Sotib olish</button>
+      <div id="nonPremiumUI" class="premium-promo">
+        <h3>Premium'ga o'ting</h3>
+        <p>Qidiruvda yuqorida chiqish va maxsus badge'ga ega bo'ling.</p>
+        <button
+          class="promo-btn"
+          onclick="window.location.href='premium-info.html'"
+        >
+          Sotib olish
+        </button>
+      </div>
+      <div id="premiumUI" class="banner-card">
+        <h3 style="margin-bottom: 4px">Reklama Banneri</h3>
+        <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 12px">
+          Mahsulotlaringizni top-pozitsiyaga chiqaring.
+        </p>
+        <button
+          class="banner-btn"
+          onclick="window.location.href='banners.html'"
+        >
+          Bannerlar
+        </button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <p class="stat-label">Mahsulotlar</p>
+          <p class="stat-value" id="productCount">0</p>
         </div>
-
-        <div id="premiumUI" class="banner-card">
-            <h3 style="margin-bottom: 4px;">Reklama Banneri</h3>
-            <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 12px;">Mahsulotlaringizni top-pozitsiyaga chiqaring.</p>
-            <button class="banner-btn" onclick="window.location.href='banners.html'">Bannerlar</button>
+        <div class="stat-card">
+          <p class="stat-label">Raqobatbardoshlik</p>
+          <p class="stat-value" id="competitiveness">0%</p>
         </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <p class="stat-label">Mahsulotlar</p>
-                <p class="stat-value" id="productCount">0</p>
-            </div>
-            <div class="stat-card">
-                <p class="stat-label">Raqobatbardoshlik</p>
-                <p class="stat-value" id="competitiveness">0%</p>
-            </div>
+      </div>
+      <div class="chart-mock">
+        <div class="chart-header">
+          <p class="chart-title">Analitika ko'rsatkichi</p>
+          <span
+            id="compLabel"
+            style="font-size: 0.7rem; color: var(--accent); font-weight: 700"
+            >Loading...</span
+          >
         </div>
-
-        <div class="chart-mock">
-            <div class="chart-header">
-                <p class="chart-title">Analitika ko'rsatkichi</p>
-                <span id="compLabel" style="font-size: 0.7rem; color: var(--accent); font-weight: 700;">Loading...</span>
-            </div>
-            <div class="progress-container">
-                <div id="compBar" class="progress-fill"></div>
-            </div>
-            <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 8px;">Bozordagi faollik darajasi</p>
+        <div class="progress-container">
+          <div id="compBar" class="progress-fill"></div>
         </div>
-
-        <div class="recent-sales">
-            <h3 class="section-title">Top mahsulotlar</h3>
-            <div id="topProductsList"></div>
-        </div>
+        <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 8px">
+          Bozordagi faollik darajasi
+        </p>
+        <button id="analysisBtn" class="promo-btn" style="margin-top: 16px">
+          Raqobatchilarni tahlil qilish
+        </button>
+        <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 8px">
+          Faqat premium foydalanuvchilar uchun
+        </p>
+      </div>
+      <div class="recent-sales">
+        <h3 class="section-title">Top mahsulotlar</h3>
+        <div id="topProductsList"></div>
+      </div>
     </div>
-
     <div class="ai-fab" onclick="tg.showAlert('AI Chatbot tez kunda...')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <path
+          d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+        ></path>
+      </svg>
     </div>
-
     <nav class="nav">
-        <a href="seller-dashboard.html" class="nav-link active">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-            <span class="nav-label">Asosiy</span>
-        </a>
-        <a href="seller-products.html" class="nav-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="11" y2="17"></line></svg>
-            <span class="nav-label">Mahsulotlar</span>
-        </a>
-        <a href="seller-profile.html" class="nav-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span class="nav-label">Profil</span>
-        </a>
+      <a href="seller-dashboard.html" class="nav-link active">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+          />
+        </svg>
+        <span class="nav-label">Asosiy</span>
+      </a>
+      <a href="seller-products.html" class="nav-link">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="9" y1="9" x2="15" y2="9"></line>
+          <line x1="9" y1="13" x2="15" y2="13"></line>
+          <line x1="9" y1="17" x2="11" y2="17"></line>
+        </svg>
+        <span class="nav-label">Mahsulotlar</span>
+      </a>
+      <a href="seller-profile.html" class="nav-link">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span class="nav-label">Profil</span>
+      </a>
     </nav>
-
     <script>
-        const tg = window.Telegram.WebApp;
-        const token = localStorage.getItem('token');
-        const isPremium = localStorage.getItem('isPremium') === 'true';
-
-        if(isPremium) {
-            document.getElementById('premiumUI').style.display = 'block';
-            document.getElementById('premiumV').style.display = 'block';
-            document.getElementById('roleTag').innerText = 'Premium Seller';
-            document.getElementById('roleTag').style.background = '#fff8e1';
-            document.getElementById('roleTag').style.color = '#ffa000';
-        } else {
-            document.getElementById('nonPremiumUI').style.display = 'block';
-        }
-
-        async function fetchStats() {
-            try {
-                const response = await fetch('https://api.loopa.buzz/api/statistics/seller', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const res = await response.json();
-                if (res.success) {
-                    const data = res.data;
-                    document.getElementById('productCount').innerText = data.productCount;
-                    document.getElementById('competitiveness').innerText = data.competitiveness + '%';
-                    document.getElementById('compBar').style.width = data.competitiveness + '%';
-                    document.getElementById('compLabel').innerText = data.competitiveness >= 50 ? 'Yaxshi ↑' : 'Past ↓';
-                    const list = document.getElementById('topProductsList');
-                    list.innerHTML = data.topProducts.map(item => `
+      const tg = window.Telegram.WebApp;
+      const token = localStorage.getItem("token");
+      const isPremium = localStorage.getItem("isPremium") === "true";
+      if (isPremium) {
+        document.getElementById("premiumUI").style.display = "block";
+        document.getElementById("premiumV").style.display = "block";
+        document.getElementById("roleTag").innerText = "Premium Seller";
+        document.getElementById("roleTag").style.background = "#fff8e1";
+        document.getElementById("roleTag").style.color = "#ffa000";
+      } else {
+        document.getElementById("nonPremiumUI").style.display = "block";
+      }
+      async function fetchStats() {
+        try {
+          const response = await fetch(
+            "https://api.loopa.buzz/api/statistics/seller",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const res = await response.json();
+          if (res.success) {
+            const data = res.data;
+            document.getElementById("productCount").innerText =
+              data.productCount;
+            document.getElementById("competitiveness").innerText =
+              data.competitiveness + "%";
+            document.getElementById("compBar").style.width =
+              data.competitiveness + "%";
+            document.getElementById("compLabel").innerText =
+              data.competitiveness >= 50 ? "Yaxshi ↑" : "Past ↓";
+            const list = document.getElementById("topProductsList");
+            list.innerHTML =
+              data.topProducts
+                .map(
+                  (item) => `
                         <div class="sale-item">
-                            <img src="${item.cover}" class="product-img" onerror="this.src='https://placehold.co/100x100'">
+                            <img src="${
+                              item.cover
+                            }" class="product-img" onerror="this.src='https://placehold.co/100x100'">
                             <div class="sale-info">
                                 <h4>${item.name}</h4>
                                 <p>👍 ${item.recommendedCount} ta tavsiya</p>
                             </div>
                             <span class="sale-price">${item.price.toLocaleString()} so'm</span>
                         </div>
-                    `).join('') || '<p style="font-size:0.8rem;text-align:center;color:#64748b;padding:20px;">Mahsulotlar yo\'q</p>';
-                }
-            } catch (e) {}
+                    `
+                )
+                .join("") ||
+              '<p style="font-size:0.8rem;text-align:center;color:#64748b;padding:20px;">Mahsulotlar yo\'q</p>';
+          }
+        } catch (e) {}
+      }
+      document.getElementById("sellerName").innerText =
+        tg.initDataUnsafe?.user?.first_name || "Loopa Seller";
+      tg.ready();
+      tg.expand();
+      fetchStats();
+      document.getElementById("analysisBtn").addEventListener("click", () => {
+        if (isPremium) {
+          window.location.href = "analysis.html";
+        } else {
+          window.location.href = "premium-info.html";
         }
-
-        document.getElementById('sellerName').innerText = tg.initDataUnsafe?.user?.first_name || 'Loopa Seller';
-        tg.ready(); tg.expand(); fetchStats();
+      });
     </script>
-</body>
+  </body>
 </html>
