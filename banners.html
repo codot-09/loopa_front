@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Loopa - Bannerlar</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+    --primary: #011627;
+    --accent: #3a86ff;
+    --success: #2ec4b6;
+    --danger: #e71d36;
+    --bg: #f8f9fa;
+    --white: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --text-muted: #64748b;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); min-height: 100vh; }
+header {
+    background: var(--white); padding: 15px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100;
+}
+.back-btn {
+    background: #f1f5f9; border: none; width: 36px; height: 36px;
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--primary);
+}
+.container { padding: 20px; }
+.section-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; color: var(--primary); }
+
+.banner-card {
+    background: var(--white); border-radius: 24px; overflow: hidden;
+    border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    display: none; transition: 0.3s;
+}
+.banner-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+.banner-info { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.delete-btn {
+    background: #fff1f2; color: var(--danger); border: none; padding: 10px 16px;
+    border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 0.9rem;
+    display: flex; align-items: center; gap: 6px;
+}
+
+.empty-state {
+    text-align: center; padding: 40px 20px; background: var(--white);
+    border-radius: 24px; border: 1px dashed #cbd5e1; display: none;
+}
+.empty-icon { font-size: 40px; margin-bottom: 15px; display: block; }
+
+.action-bar {
+    position: fixed; bottom: 20px; left: 0; width: 100%; padding: 0 20px;
+}
+.btn {
+    width: 100%; padding: 18px; border-radius: 18px; font-size: 1rem;
+    font-weight: 800; border: none; cursor: pointer; transition: 0.3s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: none; align-items: center;
+    justify-content: center; z-index: 1000; padding: 20px;
+}
+.modal-content {
+    background: white; padding: 25px; border-radius: 28px;
+    width: 100%; max-width: 350px; position: relative;
+}
+.upload-box {
+    border: 2px dashed #cbd5e1; border-radius: 20px; padding: 30px 15px;
+    text-align: center; cursor: pointer; margin-bottom: 20px;
+}
+.upload-box img { max-width: 100%; border-radius: 12px; display: none; margin-top: 10px; }
+
+#loader { 
+    width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); 
+    border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; 
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+    <button class="back-btn" onclick="history.back()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span style="font-weight: 800; font-size: 1.1rem;">Mening bannerim</span>
+</header>
+
+<div class="container">
+    <h2 class="section-title">Hozirgi banner</h2>
+    
+    <div id="bannerContainer" class="banner-card">
+        <img id="bannerImg" class="banner-img" src="" alt="Banner">
+        <div class="banner-info">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Faol holatda</span>
+            <button class="delete-btn" onclick="deleteBanner()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                O'chirish
+            </button>
+        </div>
+    </div>
+
+    <div id="emptyState" class="empty-state">
+        <span class="empty-icon">🖼️</span>
+        <p style="color: var(--text-muted); font-weight: 500;">Sizda hali banner yo'q</p>
+    </div>
+</div>
+
+<div class="action-bar">
+    <button id="addBtn" class="btn btn-primary" onclick="openModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Banner qo'shish
+    </button>
+</div>
+
+<div class="modal" id="uploadModal">
+    <div class="modal-content">
+        <h3 style="margin-bottom: 20px; text-align: center;">Yangi banner</h3>
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <div id="upPlace">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">Rasm tanlang</p>
+            </div>
+            <img id="uploadPreview">
+        </div>
+        <input type="file" id="fileInput" hidden accept="image/*">
+        
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" style="background: #f1f5f9; color: var(--primary);" onclick="closeModal()">Bekor qilish</button>
+            <button id="saveBtn" class="btn btn-primary" disabled onclick="saveBanner()">
+                <span id="saveText">Saqlash</span>
+                <div id="loader"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+const tg = window.Telegram.WebApp;
+const API_BASE = 'https://api.loopa.buzz';
+const token = localStorage.getItem('token');
+
+let currentBanner = null;
+let selectedImageUrl = '';
+
+async function fetchBanner() {
+    try {
+        const res = await fetch(`${API_BASE}/api/banners/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const json = await res.json();
+        
+        if (json.success && json.data) {
+            currentBanner = json.data;
+            document.getElementById('bannerImg').src = json.data.coverImage;
+            document.getElementById('bannerContainer').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('addBtn').disabled = true;
+        } else {
+            showEmpty();
+        }
+    } catch (err) {
+        showEmpty();
+    }
+}
+
+function showEmpty() {
+    document.getElementById('bannerContainer').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('addBtn').disabled = false;
+}
+
+function openModal() {
+    document.getElementById('uploadModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('uploadModal').style.display = 'none';
+    resetModal();
+}
+
+document.getElementById('fileInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const preview = document.getElementById('uploadPreview');
+    const place = document.getElementById('upPlace');
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+    place.style.display = 'none';
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const res = await fetch(`${API_BASE}/api/media/upload`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+        });
+        selectedImageUrl = await res.text();
+        document.getElementById('saveBtn').disabled = false;
+    } catch (err) {
+        tg.showAlert('Yuklashda xatolik');
+    }
+});
+
+async function saveBanner() {
+    const saveBtn = document.getElementById('saveBtn');
+    const loader = document.getElementById('loader');
+    const saveText = document.getElementById('saveText');
+
+    saveBtn.disabled = true;
+    loader.style.display = 'block';
+    saveText.style.display = 'none';
+
+    try {
+        const res = await fetch(`${API_BASE}/api/banners`, {
+            method: 'POST',
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ coverImage: selectedImageUrl })
+        });
+        const data = await res.json();
+        if (data.success) {
+            closeModal();
+            fetchBanner();
+            tg.HapticFeedback.notificationOccurred('success');
+        }
+    } catch (err) {
+        tg.showAlert('Xatolik yuz berdi');
+    } finally {
+        saveBtn.disabled = false;
+        loader.style.display = 'none';
+        saveText.style.display = 'block';
+    }
+}
+
+async function deleteBanner() {
+    tg.showConfirm("Bannerni o'chirishni istaysizmi?", async (ok) => {
+        if (ok) {
+            try {
+                const res = await fetch(`${API_BASE}/api/banners`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showEmpty();
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            } catch (err) {
+                tg.showAlert('O\'chirishda xatolik');
+            }
+        }
+    });
+}
+
+function resetModal() {
+    document.getElementById('uploadPreview').style.display = 'none';
+    document.getElementById('upPlace').style.display = 'block';
+    document.getElementById('saveBtn').disabled = true;
+    document.getElementById('fileInput').value = '';
+    selectedImageUrl = '';
+}
+
+tg.ready();
+tg.expand();
+fetchBanner();
+</script>
+</body>
+</html>
