@@ -211,15 +211,20 @@
                 
                 document.getElementById('p-chat').onclick = (e) => {
                     e.preventDefault();
-                    let user = data.sellerContact.replace('@', '').trim();
-                    if (user.includes('t.me/')) user = user.split('t.me/')[1];
-                    
+                    let user = data.sellerContact.trim().replace(/^@/, '');
+                    if (user.includes('t.me/')) {
+                        user = user.split('t.me/')[1];
+                    }
                     window.location.href = `https://t.me/${user}`;
                 };
 
-                document.getElementById('p-call').href = `tel:${data.phone}`;
+                document.getElementById('p-call').onclick = (e) => {
+                    e.preventDefault();
+                    const phone = data.phone.replace(/\s+/g, '');
+                    window.location.href = `tel:${phone}`;
+                };
 
-                if(data.isFavourite) document.getElementById('favBtn').classList.add('active');
+                if(data.favourite) document.getElementById('favBtn').classList.add('active');
 
                 const pr = data.recommendedPrecent || 0;
                 document.getElementById('p-percent').innerText = pr + "%";
