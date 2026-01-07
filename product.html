@@ -211,7 +211,9 @@
                 
                 document.getElementById('p-chat').onclick = (e) => {
                     e.preventDefault();
-                    tg.openTelegramLink(`https://t.me/${data.sellerContact.replace('@', '')}`);
+                    const contact = data.sellerContact.trim().replace(/^@/, '');
+                    const target = contact.includes('t.me/') ? contact : `https://t.me/${contact}`;
+                    tg.openTelegramLink(target);
                 };
 
                 document.getElementById('p-call').href = `tel:${data.phone}`;
