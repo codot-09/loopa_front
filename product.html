@@ -211,9 +211,19 @@
                 
                 document.getElementById('p-chat').onclick = (e) => {
                     e.preventDefault();
-                    const contact = data.sellerContact.trim().replace(/^@/, '');
-                    const target = contact.includes('t.me/') ? contact : `https://t.me/${contact}`;
-                    tg.openTelegramLink(target);
+                    
+                    // Kontaktni tozalash (bo'sh joy, @ va t.me/ qismlarini olib tashlash)
+                    let username = data.sellerContact.replace(/https:\/\/t.me\/|@|\s/g, "");
+                    
+                    // To'g'ridan-to'g'ri URL hosil qilish
+                    const url = `https://t.me/${username}`;
+
+                    // Telegram WebApp maxsus metodidan foydalanish
+                    if (window.Telegram && window.Telegram.WebApp) {
+                        window.Telegram.WebApp.openTelegramLink(url);
+                    } else {
+                        window.open(url, '_blank');
+                    }
                 };
 
                 document.getElementById('p-call').href = `tel:${data.phone}`;
