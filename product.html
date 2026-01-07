@@ -91,8 +91,8 @@
             display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
         }
 
-        .tg-bg { background: var(--tg-color); }
-        .ph-bg { background: var(--call-color); }
+        .tg-bg { background: var(--tg-color); color: white; }
+        .ph-bg { background: var(--call-color); color: white; }
 
         .contact-info { flex: 1; }
         .contact-label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
@@ -329,6 +329,8 @@
                 let formattedPhone = phone;
                 if (phone.startsWith('998')) {
                     formattedPhone = '+998 ' + phone.slice(3,5) + ' ' + phone.slice(5,8) + ' ' + phone.slice(8,10) + ' ' + phone.slice(10);
+                } else if (phone.startsWith('8')) {
+                    formattedPhone = '+' + phone;
                 }
 
                 contactSection.innerHTML += `
@@ -341,6 +343,10 @@
                         <span class="arrow">›</span>
                     </a>
                 `;
+            }
+
+            if (contactSection.innerHTML === '') {
+                contactSection.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Aloqa maʼlumotlari mavjud emas</p>';
             }
 
             document.getElementById('loader').style.display = 'none';
