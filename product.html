@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mahsulot</title>
+    <title>Mahsulot tafsilotlari</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -22,23 +22,48 @@
             --tg-color: #24A1DE;
             --call-color: #34C759;
         }
+
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); padding-bottom: 140px; }
+
         .swiper { width: 100%; height: 380px; background: #eee; position: relative; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
-        .media-counter { position: absolute; bottom: 45px; right: 20px; z-index: 10; background: rgba(0,0,0,0.6); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; backdrop-filter: blur(4px); }
-        .top-actions { position: absolute; top: 20px; left: 0; right: 0; padding: 0 20px; z-index: 100; display: flex; justify-content: space-between; }
-        .circle-btn { background: rgba(255,255,255,0.9); border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer; }
+        
+        .media-counter {
+            position: absolute; bottom: 45px; right: 20px; z-index: 10;
+            background: rgba(0,0,0,0.6); color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 600; backdrop-filter: blur(4px);
+        }
+
+        .top-actions { 
+            position: absolute; top: 20px; left: 0; right: 0; 
+            padding: 0 20px; z-index: 100; 
+            display: flex; justify-content: space-between; 
+        }
+        
+        .circle-btn { 
+            background: rgba(255,255,255,0.9); border: none; width: 42px; height: 42px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+        }
+
         .fav-btn svg { fill: none; stroke: var(--primary); transition: 0.3s; }
         .fav-btn.active svg { fill: var(--danger); stroke: var(--danger); }
-        .content { margin-top: -30px; background: var(--bg); border-radius: 30px 30px 0 0; position: relative; z-index: 5; padding: 24px 20px; display: flex; flex-direction: column; gap: 20px; }
+
+        .content { 
+            margin-top: -30px; background: var(--bg); border-radius: 30px 30px 0 0; 
+            position: relative; z-index: 5; padding: 24px 20px; display: flex; flex-direction: column; gap: 20px; 
+        }
+
         .category-tag { color: var(--accent); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
         .product-title { font-size: 1.5rem; font-weight: 800; margin: 4px 0; }
         .price-box { display: flex; align-items: baseline; gap: 8px; }
         .price { font-size: 1.4rem; font-weight: 900; color: var(--accent); }
         .price-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+
         .card { background: var(--white); padding: 18px; border-radius: 20px; border: 1px solid var(--border); }
         .card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
         .stats-flex { display: flex; align-items: center; gap: 16px; }
         .progress-ring { position: relative; width: 64px; height: 64px; }
         .progress-ring svg { transform: rotate(-90deg); width: 64px; height: 64px; }
@@ -46,44 +71,106 @@
         .ring-bg { stroke: #f1f5f9; }
         .ring-fill { stroke: var(--success); stroke-linecap: round; transition: 1s ease; }
         .percentage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
+
         #map { height: 200px; width: 100%; border-radius: 16px; margin-top: 12px; z-index: 2; border: 1px solid var(--border); }
-        .sticky-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 12px 16px 24px; display: flex; flex-direction: column; gap: 10px; z-index: 100; border-top: 1px solid var(--border); }
-        .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { border: none; padding: 12px; border-radius: 14px; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-decoration: none; }
-        .btn-vote { background: var(--white); color: var(--primary); border: 2px solid var(--primary); width: 100%; }
-        .btn-tg { background: var(--tg-color); color: var(--white); }
-        .btn-call { background: var(--call-color); color: var(--white); }
-        .loader { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+        .sticky-footer { 
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); 
+            backdrop-filter: blur(10px); padding: 16px; display: flex; flex-direction: column; 
+            gap: 12px; z-index: 100; border-top: 1px solid var(--border);
+        }
+
+        .contact-link {
+            display: flex; align-items: center; gap: 16px; padding: 16px;
+            background: var(--white); border-radius: 16px; text-decoration: none;
+            border: 1px solid var(--border);
+        }
+
+        .icon-box {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+        }
+
+        .tg-bg { background: var(--tg-color); }
+        .ph-bg { background: var(--call-color); }
+
+        .contact-info { flex: 1; }
+        .contact-label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+        .contact-value { font-weight: 700; color: var(--primary); font-size: 1rem; }
+
+        .arrow { font-size: 1.5rem; color: var(--text-muted); }
+
+        .btn-vote { 
+            background: var(--white); color: var(--primary); border: 2px solid var(--primary); 
+            padding: 14px; border-radius: 16px; font-weight: 700; font-size: 0.95rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+        }
+
+        .loader { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; font-weight: 700; font-size: 1rem; }
+        .error-state { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 24px; padding: 20px; text-align: center; }
+        .error-icon { font-size: 4rem; }
+        .retry-btn { background: var(--accent); color: white; border: none; padding: 14px 32px; border-radius: 14px; font-weight: 700; font-size: 1rem; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div id="loader" class="loader">Yuklanmoqda...</div>
+
+    <div id="loader" class="loader">
+        <div>Yuklanmoqda...</div>
+    </div>
+
+    <div id="errorState" class="error-state">
+        <div class="error-icon">❌</div>
+        <div>
+            <h3>Malumot yuklanmadi</h3>
+            <p>Internet aloqasini tekshiring yoki keyinroq qayta urinib ko'ring.</p>
+        </div>
+        <button class="retry-btn" onclick="location.reload()">Qayta yuklash</button>
+    </div>
+
     <div id="mainUI" style="display: none;">
         <div class="top-actions">
-            <button class="circle-btn" onclick="history.back()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-            <button id="favBtn" class="circle-btn fav-btn" onclick="addFavourite()"><svg width="22" height="22" viewBox="0 0 24 24" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
+            <button class="circle-btn" onclick="history.back()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button id="favBtn" class="circle-btn fav-btn" onclick="addFavourite()">
+                <svg width="22" height="22" viewBox="0 0 24 24" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.84-8.84 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
         </div>
+
         <div class="swiper">
             <div class="swiper-wrapper" id="p-slider"></div>
             <div class="media-counter" id="m-counter" style="display:none">1/1</div>
             <div class="swiper-pagination"></div>
         </div>
+
         <div class="content">
             <section>
                 <span class="category-tag" id="p-cat"></span>
                 <h1 class="product-title" id="p-name"></h1>
-                <div class="price-box"><span class="price" id="p-price"></span><span class="price-label" id="p-type"></span></div>
+                <div class="price-box">
+                    <span class="price" id="p-price"></span>
+                    <span class="price-label" id="p-type"></span>
+                </div>
             </section>
+
             <div class="card">
                 <div class="stats-flex">
                     <div class="progress-ring">
                         <svg><circle class="ring-bg"></circle><circle id="ringFill" class="ring-fill" stroke-dasharray="175.9" stroke-dashoffset="175.9"></circle></svg>
                         <div class="percentage" id="p-percent">0%</div>
                     </div>
-                    <div><p style="font-weight: 700; font-size: 0.9rem;">Tavsiya etiladi</p><p style="font-size: 0.75rem; color: var(--text-muted);">Xaridorlar ijobiy fikri</p></div>
+                    <div>
+                        <p style="font-weight: 700; font-size: 0.9rem;">Tavsiya etiladi</p>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Xaridorlar ijobiy fikri</p>
+                    </div>
                 </div>
             </div>
-            <div class="card"><h3 class="card-title">Ma'lumot</h3><p id="p-desc" style="font-size: 0.9rem; line-height: 1.6; color: #334155;"></p></div>
+
+            <div class="card">
+                <h3 class="card-title">Ma'lumot</h3>
+                <p id="p-desc" style="font-size: 0.9rem; line-height: 1.6; color: #334155;"></p>
+            </div>
+
             <div class="card">
                 <h3 class="card-title">Joylashuv va yetkazib berish</h3>
                 <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem;">
@@ -93,87 +180,194 @@
                 <div id="map"></div>
             </div>
         </div>
+
         <div class="sticky-footer">
-            <button class="btn btn-vote" onclick="voteAction()"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>Ovoz berish</button>
-            <div class="actions-row">
-                <a id="p-chat" href="#" class="btn btn-tg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-13.6 8.5 8.5 0 0 1 4.6 1.3L22 3l-1.5 5.5z"></path></svg>Telegram</a>
-                <a id="p-call" href="#" class="btn btn-call"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Qo'ng'iroq</a>
+            <button class="btn-vote" onclick="voteAction()">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                Ovoz berish
+            </button>
+
+            <div id="contactSection" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Telegram va Telefon tugmalari bu yerga dinamik qo'shiladi -->
             </div>
         </div>
     </div>
+
     <script>
         const tg = window.Telegram.WebApp;
         const productId = new URLSearchParams(window.location.search).get('id');
         const token = localStorage.getItem('token');
+
         const translate = {
             FIXED: "Aniq narx", NEGOTIABLE: "Kelishuv asosida",
             AVAILABLE: "Mavjud", REGIONAL: "Viloyat bo'ylab", NOT_AVAILABLE: "Mavjud emas",
             ELECTRONICS: "Elektronika", CLOTHES: "Kiyim-kechak", HOME: "Uy-ro'zg'or", BEAUTY: "Go'zallik", FOOD: "Oziq-ovqat", TOYS: "O'yinchoqlar", SPORT_INSTRUMENTS: "Sport"
         };
-        async function init() {
+
+        async function loadProduct() {
+            if (!productId) {
+                showError("Mahsulot ID topilmadi");
+                return;
+            }
+
+            if (!token) {
+                showError("Foydalanuvchi tizimga kirmagan");
+                return;
+            }
+
             try {
-                const res = await fetch(`https://api.loopa.buzz/api/products/${productId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                const response = await fetch(`https://api.loopa.buzz/api/products/${productId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
-                const response = await res.json();
-                const data = response.data;
-                const slider = document.getElementById('p-slider');
-                data.medias.forEach(url => {
-                    slider.innerHTML += `<div class="swiper-slide"><img src="${url}"></div>`;
-                });
-                if (data.medias.length > 1) {
-                    const counter = document.getElementById('m-counter');
-                    counter.style.display = 'block';
-                    counter.innerText = `1/${data.medias.length}`;
-                    new Swiper('.swiper', { 
-                        pagination: { el: '.swiper-pagination' },
-                        on: { slideChange: function () { counter.innerText = `${this.activeIndex + 1}/${data.medias.length}`; } }
-                    });
-                } else {
-                    new Swiper('.swiper', { pagination: { el: '.swiper-pagination' } });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        showError("Sessiya muddati tugagan. Iltimos, qayta kiriting.");
+                    } else if (response.status === 404) {
+                        showError("Mahsulot topilmadi");
+                    } else {
+                        showError(`Server xatosi: ${response.status}`);
+                    }
+                    return;
                 }
-                document.getElementById('p-cat').innerText = translate[data.category] || data.category;
-                document.getElementById('p-name').innerText = data.name;
-                document.getElementById('p-price').innerText = Number(data.price).toLocaleString() + " so'm";
-                document.getElementById('p-type').innerText = `(${translate[data.priceType] || data.priceType})`;
-                document.getElementById('p-desc').innerText = data.description;
-                document.getElementById('p-region').innerText = data.locationResponse.region;
-                document.getElementById('p-delivery').innerText = translate[data.deliveryType] || data.deliveryType;
-                document.getElementById('p-chat').onclick = (e) => {
-                    e.preventDefault();
-                    let user = data.sellerContact.trim().replace(/^@/, '');
-                    if (user.includes('t.me/')) user = user.split('t.me/')[1];
-                    tg.openTelegramLink(`https://t.me/${user}`);
-                };
-                const purePhone = data.phone.toString().replace(/\D/g, '');
-                const formattedPhone = purePhone.startsWith('998') ? `+${purePhone}` : (purePhone.length === 9 ? `+998${purePhone}` : `+${purePhone}`);
-                document.getElementById('p-call').onclick = (e) => {
-                    e.preventDefault();
-                    tg.openLink(`tel:${formattedPhone}`);
-                };
-                if(data.isFavourite) document.getElementById('favBtn').classList.add('active');
-                const pr = data.recommendedPrecent || 0;
-                document.getElementById('p-percent').innerText = pr + "%";
-                document.getElementById('ringFill').style.strokeDashoffset = 175.9 - (175.9 * pr / 100);
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('mainUI').style.display = 'block';
-                const map = L.map('map', { zoomControl: false, dragging: !tg.isExpanded }).setView([data.locationResponse.lat, data.locationResponse.lng], 14);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                L.marker([data.locationResponse.lat, data.locationResponse.lng]).addTo(map);
-            } catch (e) { tg.showAlert("Ma'lumot yuklashda xatolik"); }
+
+                const result = await response.json();
+
+                if (!result.success || !result.data) {
+                    showError("Noto'g'ri javob formati");
+                    return;
+                }
+
+                const data = result.data;
+
+                renderProduct(data);
+
+            } catch (error) {
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showError("Internet aloqasi yo'q");
+                } else {
+                    showError("Yuklashda xatolik yuz berdi");
+                }
+                console.error(error);
+            }
         }
+
+        function renderProduct(data) {
+            const slider = document.getElementById('p-slider');
+            data.medias.forEach(url => {
+                slider.innerHTML += `<div class="swiper-slide"><img src="${url}" alt="Mahsulot rasmi"></div>`;
+            });
+
+            if (data.medias.length > 1) {
+                document.getElementById('m-counter').style.display = 'block';
+                document.getElementById('m-counter').innerText = `1/${data.medias.length}`;
+                new Swiper('.swiper', { 
+                    pagination: { el: '.swiper-pagination' },
+                    on: { slideChange: function () { 
+                        document.getElementById('m-counter').innerText = `${this.activeIndex + 1}/${data.medias.length}`;
+                    } }
+                });
+            } else {
+                new Swiper('.swiper', { pagination: { el: '.swiper-pagination' } });
+            }
+
+            document.getElementById('p-cat').innerText = translate[data.category] || data.category;
+            document.getElementById('p-name').innerText = data.name || "Nomsiz mahsulot";
+            document.getElementById('p-price').innerText = Number(data.price).toLocaleString() + " so'm";
+            document.getElementById('p-type').innerText = `(${translate[data.priceType] || data.priceType})`;
+            document.getElementById('p-desc').innerText = data.description || "Tavsif mavjud emas";
+            document.getElementById('p-region').innerText = data.locationResponse.region || "Noma'lum";
+            document.getElementById('p-delivery').innerText = translate[data.deliveryType] || data.deliveryType;
+
+            if (data.favourite) {
+                document.getElementById('favBtn').classList.add('active');
+            }
+
+            const pr = data.recommendedPrecent || 0;
+            document.getElementById('p-percent').innerText = pr + "%";
+            document.getElementById('ringFill').style.strokeDashoffset = 175.9 - (175.9 * pr / 100);
+
+            const map = L.map('map', { zoomControl: false, dragging: !tg.isExpanded })
+                .setView([data.locationResponse.lat, data.locationResponse.lng], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            L.marker([data.locationResponse.lat, data.locationResponse.lng]).addTo(map);
+
+            const contactSection = document.getElementById('contactSection');
+            contactSection.innerHTML = '';
+
+            let sellerContact = data.sellerContact?.trim() || '';
+            let username = '';
+            if (sellerContact) {
+                if (sellerContact.startsWith('@')) {
+                    username = sellerContact;
+                    sellerContact = sellerContact.substring(1);
+                } else if (sellerContact.includes('t.me/')) {
+                    sellerContact = sellerContact.split('t.me/')[1];
+                    username = '@' + sellerContact;
+                } else {
+                    username = '@' + sellerContact;
+                }
+
+                contactSection.innerHTML += `
+                    <a href="https://t.me/${sellerContact}" class="contact-link" target="_blank">
+                        <div class="icon-box tg-bg">✈️</div>
+                        <div class="contact-info">
+                            <span class="contact-label">Telegram orqali yozish</span>
+                            <span class="contact-value">${username}</span>
+                        </div>
+                        <span class="arrow">›</span>
+                    </a>
+                `;
+            }
+
+            const phone = data.phone?.replace(/\s+/g, '') || '';
+            if (phone) {
+                let formattedPhone = phone;
+                if (phone.startsWith('998')) {
+                    formattedPhone = '+998 ' + phone.slice(3,5) + ' ' + phone.slice(5,8) + ' ' + phone.slice(8,10) + ' ' + phone.slice(10);
+                }
+
+                contactSection.innerHTML += `
+                    <a href="tel:${phone}" class="contact-link">
+                        <div class="icon-box ph-bg">📞</div>
+                        <div class="contact-info">
+                            <span class="contact-label">Telefon qo'ng'irog'i</span>
+                            <span class="contact-value">${formattedPhone}</span>
+                        </div>
+                        <span class="arrow">›</span>
+                    </a>
+                `;
+            }
+
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('mainUI').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('errorState').style.display = 'flex';
+            document.querySelector('#errorState p').innerText = message;
+        }
+
         async function addFavourite() {
             try {
                 const res = await fetch(`https://api.loopa.buzz/api/favourite/${productId}`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if(res.ok) {
-                    document.getElementById('favBtn').classList.toggle('active');
+                if (res.ok) {
+                    document.getElementById('favBtn').classList.add('active');
                     tg.HapticFeedback.notificationOccurred('success');
                 }
-            } catch(e) { tg.showAlert("Xatolik yuz berdi"); }
+            } catch (e) {
+                tg.showAlert("Sevimlilarga qo'shishda xatolik");
+            }
         }
+
         function voteAction() {
             tg.showConfirm("Ushbu mahsulotni tavsiya qilasizmi?", async (ok) => {
                 try {
@@ -181,16 +375,19 @@
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
-                    if(res.ok) { 
-                        tg.HapticFeedback.notificationOccurred('success'); 
-                        location.reload(); 
+                    if (res.ok) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                        location.reload();
                     }
-                } catch(e) { tg.showAlert("Ovoz berishda xatolik"); }
+                } catch (e) {
+                    tg.showAlert("Ovoz berishda xatolik");
+                }
             });
         }
+
         tg.ready();
         tg.expand();
-        init();
+        loadProduct();
     </script>
 </body>
 </html>
