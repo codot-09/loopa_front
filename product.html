@@ -212,16 +212,20 @@
                 document.getElementById('p-chat').onclick = (e) => {
                     e.preventDefault();
                     let user = data.sellerContact.trim().replace(/^@/, '');
-                    if (user.includes('t.me/')) {
-                        user = user.split('t.me/')[1];
-                    }
-                    window.location.href = `https://t.me/${user}`;
+                    if (user.includes('t.me/')) user = user.split('t.me/')[1];
+                    
+                    const finalUrl = `https://t.me/${user}`;
+                    tg.openTelegramLink(finalUrl);
                 };
 
-                document.getElementById('p-call').onclick = (e) => {
+                const purePhone = data.phone.toString().replace(/\D/g, '');
+                const formattedPhone = purePhone.startsWith('998') ? `+${purePhone}` : (purePhone.length === 9 ? `+998${purePhone}` : `+${purePhone}`);
+
+                const callBtn = document.getElementById('p-call');
+                callBtn.href = `tel:${formattedPhone}`;
+                callBtn.onclick = (e) => {
                     e.preventDefault();
-                    const phone = data.phone.replace(/\s+/g, '');
-                    window.location.href = `tel:${phone}`;
+                    tg.openLink(`tel:${formattedPhone}`);
                 };
 
                 if(data.favourite) document.getElementById('favBtn').classList.add('active');
