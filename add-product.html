@@ -172,13 +172,20 @@
             try {
                 const res = await fetch('https://api.loopa.buzz/api/media/upload', {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: formData
                 });
 
-                if (!res.ok) throw new Error();
+                if (!res.ok) {
+                    const errorText = await res.text().catch(() => 'Xatolik');
+                    throw new Error(`Server xatosi: ${res.status} - ${errorText}`);
+                }
 
                 const mediaId = await res.text();
+                if (!mediaId) throw new Error("Media ID qaytgan emas");
+
                 uploadedMedias.push(mediaId);
 
                 const div = document.createElement('div');
@@ -197,7 +204,8 @@
                 document.getElementById('mediaGrid').insertBefore(div, document.getElementById('mediaGrid').firstChild);
                 tg.HapticFeedback.impactOccurred('light');
             } catch (e) {
-                tg.showAlert("Media yuklashda xatolik yuz berdi");
+                console.error(e);
+                tg.showAlert("Media yuklashda xatolik: " + (e.message || "Tarmoq muammosi"));
             } finally {
                 document.getElementById('loader').style.display = 'none';
                 input.value = '';
@@ -237,7 +245,8 @@
                     tg.HapticFeedback.notificationOccurred('success');
                     tg.showAlert("Mahsulot muvaffaqiyatli yaratildi!", () => history.back());
                 } else {
-                    tg.showAlert("Xatolik yuz berdi, ma'lumotlarni tekshiring.");
+                    const err = await res.text().catch(() => '');
+                    tg.showAlert("Xatolik: " + (err || "Server javob bermadi"));
                 }
             } catch (e) {
                 tg.showAlert("Tarmoq ulanishida xatolik");
