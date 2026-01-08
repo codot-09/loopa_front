@@ -29,12 +29,7 @@
             aspect-ratio: 1; border: 2px dashed var(--border); border-radius: 12px; 
             display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: #fff;
         }
-        .media-box img, .media-box video { width: 100%; height: 100%; object-fit: cover; }
-        .media-box .play-icon {
-            position: absolute; width: 36px; height: 36px; background: rgba(0,0,0,0.6); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        }
-        .media-box .play-icon svg { width: 20px; height: 20px; fill: white; }
+        .media-box img { width: 100%; height: 100%; object-fit: cover; }
         .btn-submit { 
             background: var(--accent); color: var(--white); border: none; padding: 16px; 
             border-radius: 16px; font-size: 1rem; font-weight: 700; margin-top: 10px;
@@ -59,11 +54,11 @@
 
     <div class="container">
         <div class="form-group">
-            <label>Rasmlar va videolar (maks. 10 ta)</label>
+            <label>Rasmlar (maks. 10 ta)</label>
             <div class="media-grid" id="mediaGrid">
                 <label class="media-box">
                     <span style="font-size: 1.5rem; color: var(--text-muted);">+</span>
-                    <input type="file" hidden accept="image/*,video/mp4,video/quicktime,video/webm" onchange="uploadMedia(this)">
+                    <input type="file" hidden accept="image/*" onchange="uploadMedia(this)">
                 </label>
             </div>
         </div>
@@ -151,16 +146,14 @@
             if (!input.files[0]) return;
 
             const file = input.files[0];
-            const isVideo = file.type.startsWith('video/');
-            const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
 
-            if (file.size > maxSize) {
-                tg.showAlert(isVideo ? "Video hajmi 100 MB dan oshmasligi kerak" : "Rasm hajmi 10 MB dan oshmasligi kerak");
+            if (file.size > 10 * 1024 * 1024) {
+                tg.showAlert("Rasm hajmi 10 MB dan oshmasligi kerak");
                 return;
             }
 
             if (uploadedMedias.length >= 10) {
-                tg.showAlert("Maksimal 10 ta media yuklash mumkin");
+                tg.showAlert("Maksimal 10 ta rasm yuklash mumkin");
                 return;
             }
 
@@ -190,22 +183,13 @@
 
                 const div = document.createElement('div');
                 div.className = 'media-box';
-
-                if (isVideo) {
-                    div.innerHTML = `
-                        <video src="${URL.createObjectURL(file)}" muted playsinline></video>
-                        <div class="play-icon">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg>
-                        </div>`;
-                } else {
-                    div.innerHTML = `<img src="${URL.createObjectURL(file)}">`;
-                }
+                div.innerHTML = `<img src="${URL.createObjectURL(file)}">`;
 
                 document.getElementById('mediaGrid').insertBefore(div, document.getElementById('mediaGrid').firstChild);
                 tg.HapticFeedback.impactOccurred('light');
             } catch (e) {
                 console.error(e);
-                tg.showAlert("Media yuklashda xatolik: " + (e.message || "Tarmoq muammosi"));
+                tg.showAlert("Rasm yuklashda xatolik: " + (e.message || "Tarmoq muammosi"));
             } finally {
                 document.getElementById('loader').style.display = 'none';
                 input.value = '';
@@ -225,7 +209,7 @@
             };
 
             if (!data.name || isNaN(data.price) || uploadedMedias.length === 0 || !data.locationId) {
-                tg.showAlert("Iltimos, barcha maydonlarni to'ldiring va kamida bitta rasm/video yuklang.");
+                tg.showAlert("Iltimos, barcha maydonlarni to'ldiring va kamida bitta rasm yuklang.");
                 return;
             }
 
