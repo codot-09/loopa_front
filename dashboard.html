@@ -49,81 +49,114 @@
             transform: scale(1.15);
         }
         .brand-name { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.8px; color: var(--primary); }
-        .search-area { position: relative; width: 100%; margin-bottom: 16px; }
+        .search-area { position: relative; width: 100%; margin-bottom: 12px; }
         .search-bar {
             background: #f1f3f5;
-            border-radius: 12px;
-            padding: 10px 14px;
+            border-radius: 14px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             border: 1px solid transparent;
+            transition: 0.2s;
         }
-        .search-bar:focus-within { background: var(--white); border-color: var(--accent); }
-        .search-bar input { border: none; background: transparent; width: 100%; font-size: 0.95rem; outline: none; }
+        .search-bar:focus-within { background: var(--white); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(58,134,255,0.15); }
+        .search-bar input { border: none; background: transparent; width: 100%; font-size: 0.98rem; outline: none; }
         .search-history {
             position: absolute; top: 100%; left: 0; right: 0;
-            background: var(--white); border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            margin-top: 5px; padding: 6px;
+            background: var(--white); border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            margin-top: 8px; padding: 8px;
             display: none; z-index: 110;
         }
         .search-history.active { display: block; }
-        .history-item { padding: 10px; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; border-radius: 8px; }
-        .categories { display: flex; gap: 12px; overflow-x: auto; padding: 5px 0; scrollbar-width: none; }
+        .history-item { padding: 12px; font-size: 0.92rem; color: var(--text-muted); display: flex; align-items: center; gap: 10px; border-radius: 10px; cursor: pointer; }
+        .history-item:hover { background: #f8fafc; }
+        .cat-toggle {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px; background: #f1f3f5; border-radius: 12px; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); cursor: pointer;
+        }
+        .categories {
+            display: none;
+            gap: 14px;
+            overflow-x: auto;
+            padding: 12px 0 8px;
+            scrollbar-width: none;
+            margin-top: 8px;
+        }
+        .categories.active { display: flex; animation: slideDown 0.3s ease; }
         .categories::-webkit-scrollbar { display: none; }
-        .category-item { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 65px; cursor: pointer; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .category-item { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 70px; cursor: pointer; }
         .cat-icon-wrap {
-            width: 55px; height: 55px; border-radius: 16px;
+            width: 60px; height: 60px; border-radius: 18px;
             background: var(--white); border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; transition: 0.3s;
+            font-size: 1.7rem; transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        .category-item.active .cat-icon-wrap { background: var(--accent); transform: scale(1.05); box-shadow: 0 8px 15px rgba(58,134,255,0.2); border-color: var(--accent); }
+        .category-item.active .cat-icon-wrap { background: var(--accent); transform: scale(1.08); box-shadow: 0 10px 20px rgba(58,134,255,0.25); border-color: var(--accent); }
+        .category-item.active .cat-icon-wrap svg, .category-item.active .cat-icon-wrap { color: white; }
+        .cat-label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-align: center; width: 80px; line-height: 1.2; }
         .category-item.active .cat-label { color: var(--accent); font-weight: 700; }
-        .cat-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-align: center; width: 70px; line-height: 1.1; }
         .container { padding: 12px; }
-        .premium-section { margin-bottom: 20px; }
-        .premium-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
-        .premium-slider { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scrollbar-width: none; }
+        .premium-section { margin-bottom: 24px; }
+        .premium-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 12px; color: var(--text-main); }
+        .premium-slider { display: flex; overflow-x: auto; gap: 14px; padding-bottom: 10px; scrollbar-width: none; }
         .premium-slider::-webkit-scrollbar { display: none; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
         .product-card {
             background: var(--white);
-            border-radius: 18px;
+            border-radius: 20px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
             border: 1px solid var(--border);
-            transition: transform 0.2s ease;
-            height: 280px;
+            transition: all 0.3s ease;
+            height: 300px;
             position: relative;
-            min-width: calc(50% - 6px);
         }
-        .product-card.premium { box-shadow: 0 8px 20px rgba(255,140,0,0.2); border-color: #ffd700; }
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 16px 35px rgba(0,0,0,0.12); }
+        .product-card.premium {
+            border: 2px solid #ffd700;
+            box-shadow: 0 10px 30px rgba(255,215,0,0.2);
+        }
+        .product-card.premium:hover { transform: translateY(-8px) scale(1.02); }
         .product-card:active { transform: scale(0.96); }
-        .image-box { position: relative; width: 100%; height: 160px; overflow: hidden; }
-        .product-cover { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .image-box { position: relative; width: 100%; height: 180px; overflow: hidden; }
+        .product-cover { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .product-card:hover .product-cover { transform: scale(1.08); }
         .status-tag {
             position: absolute;
-            top: 8px;
-            left: 8px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 900;
+            top: 10px;
+            left: 10px;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 800;
             color: white;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            backdrop-filter: blur(6px);
         }
-        .premium-tag { background: var(--premium); }
-        .simple-tag { background: #64748b; }
-        .product-info { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .tag-hot { background: var(--hot); }
+        .tag-new { background: var(--new); }
+        .tag-sale { background: var(--sale); }
+        .tag-premium {
+            background: var(--premium);
+            padding: 6px 14px;
+            font-size: 0.78rem;
+            box-shadow: 0 4px 12px rgba(255,140,0,0.3);
+        }
+        .product-info { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
         .product-name {
-            font-size: 0.88rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            line-height: 1.3;
-            height: 2.6em;
+            line-height: 1.35;
+            height: 2.7em;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -131,40 +164,43 @@
             color: var(--text-main);
         }
         .price-box {
-            padding: 8px 12px;
-            background: #f8fafc;
-            border-radius: 10px;
-            border: 1px solid #f0f4f8;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: linear-gradient(to right, #f0f9ff, #e0f2fe);
+            border-radius: 12px;
             text-align: center;
+            border: 1px solid #dbeafe;
         }
-        .product-price { font-size: 1rem; font-weight: 900; color: var(--accent); }
-        .banners-section { margin-bottom: 20px; display: none; }
-        .banners-slider { display: flex; overflow-x: auto; gap: 12px; scrollbar-width: none; }
+        .product-price { font-size: 1.1rem; font-weight: 900; color: var(--accent); }
+        .banners-section { margin-bottom: 24px; display: none; }
+        .banners-slider { display: flex; overflow-x: auto; gap: 14px; scrollbar-width: none; }
         .banners-slider::-webkit-scrollbar { display: none; }
-        .banner-item { min-width: calc(100% - 24px); height: 150px; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .banner-item { min-width: calc(100% - 24px); height: 160px; border-radius: 20px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
         .banner-cover { width: 100%; height: 100%; object-fit: cover; }
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .not-found {
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 50px 20px;
+            padding: 60px 20px;
             text-align: center;
         }
-        .not-found img { width: 150px; opacity: 0.5; }
+        .not-found img { width: 160px; opacity: 0.6; margin-bottom: 20px; }
+        .not-found h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .not-found p { font-size: 0.9rem; color: var(--text-muted); }
         .nav {
             position: fixed; bottom: 20px; left: 20px; right: 20px;
-            height: 64px; background: var(--primary);
-            border-radius: 20px; display: flex; align-items: center;
+            height: 68px; background: var(--primary);
+            border-radius: 24px; display: flex; align-items: center;
             justify-content: space-around; z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.4); text-decoration: none; flex: 1; }
-        .nav-link.active { color: var(--white); }
-        .nav-link svg { width: 22px; height: 22px; }
-        .nav-label { font-size: 0.65rem; font-weight: 600; }
-        .skeleton { background: #eef2f7; border-radius: 18px; height: 280px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 50% { opacity: 0.5; } }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; transition: 0.2s; }
+        .nav-link.active { color: var(--white); transform: scale(1.1); }
+        .nav-link svg { width: 24px; height: 24px; }
+        .nav-label { font-size: 0.7rem; font-weight: 600; }
+        .skeleton { background: #eef2f7; border-radius: 20px; height: 300px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 50% { opacity: 0.6; } }
     </style>
 </head>
 <body>
@@ -177,12 +213,16 @@
         </div>
         <div class="search-area">
             <div class="search-bar">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 <input type="text" id="searchInput" placeholder="Mahsulot izlash...">
             </div>
             <div class="search-history" id="searchHistory"></div>
         </div>
-        <div class="categories">
+        <div class="cat-toggle" id="catToggle">
+            Kategoriyalar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="categories" id="categories">
             <div class="category-item active" data-category="">
                 <div class="cat-icon-wrap">💎</div>
                 <div class="cat-label">Siz uchun</div>
@@ -255,6 +295,8 @@
         const grid = document.getElementById('productsGrid');
         const shim = document.getElementById('shimmer');
         const notFound = document.getElementById('notFound');
+        const catToggle = document.getElementById('catToggle');
+        const categories = document.getElementById('categories');
         let query = '';
         let category = '';
         function saveHistory(v) {
@@ -278,10 +320,10 @@
                     premiumSection.innerHTML = `
                         <h2 class="premium-title">Premium mahsulotlar</h2>
                         <div class="premium-slider">
-                            ${json.data.content.map((p, i) => `
+                            ${json.data.content.map(p => `
                                 <div class="product-card premium" onclick="window.location.href='product.html?id=${p.id}'">
                                     <div class="image-box">
-                                        <span class="status-tag premium-tag">Premium!</span>
+                                        <span class="status-tag tag-premium">Premium</span>
                                         <img src="${p.cover}" class="product-cover" onerror="this.src='https://via.placeholder.com/300'">
                                     </div>
                                     <div class="product-info">
@@ -316,11 +358,9 @@
                     `;
                 } else {
                     bannersSection.style.display = 'none';
-                    bannersSection.innerHTML = '';
                 }
             } catch (e) {
                 bannersSection.style.display = 'none';
-                bannersSection.innerHTML = '';
             }
         }
         async function load() {
@@ -339,13 +379,13 @@
                 const json = await res.json();
                 shim.style.display = 'none';
                 if (json.success && json.data?.content?.length) {
+                    const tags = [['tag-hot', 'Issiq!'], ['tag-new', 'Yangi!'], ['tag-sale', 'Aksiya!']];
                     grid.innerHTML = json.data.content.map((p, i) => {
-                        const tags = [['var(--hot)', 'Issiq!'], ['var(--new)', 'Yangi!'], ['var(--sale)', 'Sale!']];
                         const t = tags[i % 3];
                         return `
                             <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
                                 <div class="image-box">
-                                    <span class="status-tag simple-tag" style="background:${t[0]}">${t[1]}</span>
+                                    <span class="status-tag ${t[0]}">${t[1]}</span>
                                     <img src="${p.cover}" class="product-cover" onerror="this.src='https://via.placeholder.com/300'">
                                 </div>
                                 <div class="product-info">
@@ -374,8 +414,15 @@
             item.addEventListener('click', () => {
                 tg.HapticFeedback.impactOccurred('light');
                 document.querySelector('.category-item.active').classList.remove('active');
-                item.classList.add('active'); category = item.dataset.category; load();
+                item.classList.add('active');
+                category = item.dataset.category;
+                load();
+                categories.classList.remove('active');
             });
+        });
+        catToggle.addEventListener('click', () => {
+            categories.classList.toggle('active');
+            tg.HapticFeedback.impactOccurred('light');
         });
         tg.ready(); tg.expand(); load();
     </script>
