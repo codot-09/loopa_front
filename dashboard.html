@@ -225,14 +225,20 @@
         .not-found h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
         .not-found p { font-size: 0.92rem; color: var(--text-muted); }
         .nav {
-            position: fixed; bottom: 20px; left: 20px; right: 20px;
-            height: 64px; background: rgba(1, 22, 39, 0.98);
-            border-radius: 20px; display: flex; align-items: center;
-            justify-content: space-around; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1000;
+            position: fixed;
+            bottom: 20px; left: 20px; right: 20px;
+            height: 64px;
+            background: rgba(1, 22, 39, 0.98);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 1000;
         }
         .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.5); text-decoration: none; flex: 1; }
         .nav-link.active { color: var(--white); }
-        .nav-link svg { width: 22px; height: 22px; }
+        .nav-link svg { width: 20px; height: 20px; }
         .nav-label { font-size: 0.65rem; font-weight: 600; }
         .skeleton { background: #eef2f7; border-radius: 22px; height: 300px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { opacity: 0.6; } }
