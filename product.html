@@ -27,8 +27,17 @@
         body { background: var(--bg); font-family: -apple-system, system-ui, sans-serif; color: var(--primary); padding-bottom: 180px; }
 
         .swiper { width: 100%; height: 380px; background: #eee; position: relative; }
-        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .swiper-slide { position: relative; }
+        .swiper-slide img, .swiper-slide video { width: 100%; height: 100%; object-fit: cover; }
         
+        .video-badge {
+            position: absolute; top: 12px; left: 12px; z-index: 10;
+            background: rgba(0,0,0,0.7); color: white; padding: 6px 12px;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+            display: flex; align-items: center; gap: 6px; backdrop-filter: blur(4px);
+        }
+        .video-badge svg { width: 16px; height: 16px; }
+
         .media-counter {
             position: absolute; bottom: 45px; right: 20px; z-index: 10;
             background: rgba(0,0,0,0.6); color: white; padding: 4px 12px;
@@ -206,15 +215,49 @@
 
         function renderProduct(data) {
             const slider = document.getElementById('p-slider');
-            data.medias.forEach(url => {
-                slider.innerHTML += `<div class="swiper-slide"><img src="${url}"></div>`;
+            data.medias.forEach((url, index) => {
+                const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm') || url.toLowerCase().endsWith('.mov');
+                let slideHTML = '';
+                
+                if (isVideo) {
+                    slideHTML = `
+                        <div class="swiper-slide">
+                            <div class="video-badge">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+                                Video
+                            </div>
+                            <video controls preload="metadata" playsinline>
+                                <source src="${url}" type="video/mp4">
+                                <source src="${url}" type="video/webm">
+                                Video ko'rsatish imkoni yo'q
+                            </video>
+                        </div>`;
+                } else {
+                    slideHTML = `<div class="swiper-slide"><img src="${url}" alt="Rasm ${index + 1}"></div>`;
+                }
+                
+                slider.innerHTML += slideHTML;
             });
 
-            new Swiper('.swiper', { 
+            const swiperInstance = new Swiper('.swiper', { 
                 pagination: { el: '.swiper-pagination' },
-                on: { slideChange: function() {
-                    document.getElementById('m-counter').innerText = `${this.activeIndex + 1}/${data.medias.length}`;
-                }}
+                on: {
+                    slideChange: function() {
+                        document.getElementById('m-counter').innerText = `${this.activeIndex + 1}/${data.medias.length}`;
+                    },
+                    tap: function() {
+                        const activeSlide = this.slides[this.activeIndex];
+                        const media = activeSlide.querySelector('img') || activeSlide.querySelector('video');
+                        if (media) {
+                            if (media.tagName === 'IMG') {
+                                tg.openLink(media.src);
+                            } else if (media.tagName === 'VIDEO') {
+                                if (media.paused) media.play();
+                                else media.pause();
+                            }
+                        }
+                    }
+                }
             });
 
             if (data.medias.length > 1) {
@@ -236,7 +279,6 @@
             document.getElementById('p-percent').innerText = pr + "%";
             document.getElementById('ringFill').style.strokeDashoffset = 175.9 - (175.9 * pr / 100);
 
-            // Xaritani ishga tushirish
             setTimeout(() => {
                 const map = L.map('map', { zoomControl: false }).setView([data.locationResponse.lat, data.locationResponse.lng], 14);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
@@ -244,7 +286,6 @@
                 map.invalidateSize();
             }, 300);
 
-            // Kontaktlarni shakllantirish
             const grid = document.getElementById('contactGrid');
             let html = '';
             
